@@ -57,20 +57,23 @@ clean-test:	## Remove test artifacts
 	rm -rf reports
 	rm -rf .pytype
 
-check-codestyle:  ## checks the style of the code against PEP8
+check-codestyle:  ## Check the style of the code against PEP8
 	pycodestyle rest_model_service --max-line-length=120
 
-check-docstyle:  ## checks the style of the docstrings against PEP257
+check-docstyle:  ## Check the style of the docstrings against PEP257
 	pydocstyle rest_model_service
 
-check-security:  ## checks for common security vulnerabilities
+check-security:  ## Check for common security vulnerabilities
 	bandit -r rest_model_service
 
-check-dependencies:  ## checks for security vulnerabilities in dependencies
+check-dependencies:  ## Check for security vulnerabilities in dependencies
 	safety check -r requirements.txt
 
-check-codemetrics:  ## calculate code metrics of the package
+check-codemetrics:  ## Calculate code metrics of the package
 	radon cc rest_model_service
 
-check-pytype:  ## perform static code analysis
+check-pytype:  ## Perform static code analysis
 	pytype rest_model_service
+
+check-annotations: ## Check for type annotations coverage
+	flake8 rest_model_service --max-line-length=120

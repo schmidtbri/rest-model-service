@@ -13,7 +13,7 @@ from rest_model_service.schemas import ModelMetadataCollection, Error
          responses={
              500: {"model": Error}
          })
-async def get_models():
+async def get_models():   # noqa: ANN201
     """List of models available."""
     try:
         # instantiating ModelManager singleton
@@ -36,11 +36,11 @@ class PredictionController(object):
 
     """
 
-    def __init__(self, model: MLModel):
+    def __init__(self, model: MLModel) -> None:  # noqa: ANN101
         """Initialize the controller."""
         self._model = model
 
-    def __call__(self, data):
+    def __call__(self, data):  # noqa: ANN001,ANN204,ANN101
         """Make a prediction with a model."""
         try:
             prediction = self._model.predict(data).dict()

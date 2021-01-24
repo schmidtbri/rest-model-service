@@ -18,12 +18,12 @@ class Settings(BaseSettings):
 settings = Settings()
 app: FastAPI = FastAPI(title=settings.service_title)
 
-from rest_model_service import routes                        # noqa: D402
-from rest_model_service.routes import PredictionController   # noqa: D402
+from rest_model_service import routes                        # noqa: F401,E402
+from rest_model_service.routes import PredictionController   # noqa: E402
 
 
 @app.on_event("startup")
-async def startup_event():
+async def startup_event():  # noqa: ANN201
     """Startup the service."""
     # loading the models into the ModelManager singleton instance
     model_manager = ModelManager()

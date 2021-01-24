@@ -64,3 +64,6 @@ networkx==2.5
 ninja==1.10.0.post2
 pytype==2021.1.14
 typed-ast==1.4.2
+
+# this package checks for type annotation coverage
+flake8-annotations==2.5.0
