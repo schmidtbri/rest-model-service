@@ -1,6 +1,5 @@
 """Service app and startup function."""
 from typing import List
-import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseSettings
 from ml_base.utilities import ModelManager
