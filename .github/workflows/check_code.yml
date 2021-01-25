@@ -46,9 +46,6 @@ jobs:
     - name: Annotations Coverage
       run: make check-annotations
 
-    - name: Static Analysis
-      run: make check-pytype
-
     - name: Run Unit Tests
       run: make test-reports
 
