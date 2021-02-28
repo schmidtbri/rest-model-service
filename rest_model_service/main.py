@@ -1,29 +1,33 @@
 """Service app and startup function."""
-from typing import List
 from fastapi import FastAPI
-from pydantic import BaseSettings
+
 from ml_base.utilities import ModelManager
 
-from rest_model_service.schemas import Error
+from rest_model_service import __version__
+from rest_model_service.settings import Settings
+from rest_model_service.schemas import Error, ModelMetadataCollection
+from rest_model_service.routes import get_root, get_models, PredictionController     # noqa: F401,E402
 
 
-class Settings(BaseSettings):
-    """Settings for the service."""
+def create_app() -> FastAPI:
+    """Create instance of FastAPI app and return it."""
+    settings = Settings()
+    app: FastAPI = FastAPI(title=settings.service_title,
+                           version=__version__)
 
-    service_title: str = "RESTful Model Service"
-    models: List[str]
+    # adding the routes like this to avoid a circular dependency
+    app.add_api_route("/",
+                      get_root,
+                      methods=["GET"])
 
+    app.add_api_route("/api/models",
+                      get_models,
+                      methods=["GET"],
+                      response_model=ModelMetadataCollection,
+                      responses={
+                          500: {"model": Error}
+                      })
 
-settings = Settings()
-app: FastAPI = FastAPI(title=settings.service_title)
-
-from rest_model_service import routes                        # noqa: F401,E402
-from rest_model_service.routes import PredictionController   # noqa: E402
-
-
-@app.on_event("startup")
-async def startup_event():  # noqa: ANN201
-    """Startup the service."""
     # loading the models into the ModelManager singleton instance
     model_manager = ModelManager()
 
@@ -45,3 +49,8 @@ async def startup_event():  # noqa: ANN201
                               400: {"model": Error},
                               500: {"model": Error}
                           })
+
+    return app
+
+
+app = create_app()

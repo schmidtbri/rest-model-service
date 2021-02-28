@@ -1,8 +1,7 @@
 from pydantic import BaseModel, Field
-from pydantic import ValidationError
 from enum import Enum
 
-from ml_base.ml_model import MLModel, MLModelSchemaValidationException
+from ml_base.ml_model import MLModel
 
 
 class IrisModelInput(BaseModel):

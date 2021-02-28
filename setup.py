@@ -25,12 +25,13 @@ setup(name=__name__,
                      "flake8-annotations"],
       classifiers=[
           "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: BSD-3-Clause",
           "Intended Audience :: Developers",
           "Operating System :: OS Independent"
       ],
       project_urls={
-          "Source Code": "https://github.com/schmidtbri/rest-model-service"
+          "Documentation": "https://schmidtbri.github.io/rest-model-service/",
+          "Source Code": "https://github.com/schmidtbri/rest-model-service",
+          "Tracker": "https://github.com/schmidtbri/rest-model-service/issues"
       },
       keywords=[
           "machine learning", "REST", "service"

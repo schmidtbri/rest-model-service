@@ -1,18 +1,20 @@
 """Routes for the service."""
 from fastapi.responses import JSONResponse
+from starlette.responses import RedirectResponse
+
 from ml_base import MLModel
 from ml_base.ml_model import MLModelSchemaValidationException
 from ml_base.utilities import ModelManager
 
-from rest_model_service.main import app
 from rest_model_service.schemas import ModelMetadataCollection, Error
 
 
-@app.get("/api/models",
-         response_model=ModelMetadataCollection,
-         responses={
-             500: {"model": Error}
-         })
+async def get_root():   # noqa: ANN201
+    """Root of API."""
+    response = RedirectResponse(url='/docs')
+    return response
+
+
 async def get_models():   # noqa: ANN201
     """List of models available."""
     try:
