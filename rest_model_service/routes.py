@@ -22,9 +22,9 @@ async def get_models():   # noqa: ANN201
         model_manager = ModelManager()
 
         # retrieving the model metadata from the model manager
-        models_metadata_collection = model_manager.get_models()
-        models_metadata_collection = ModelMetadataCollection(**{"models": models_metadata_collection}).dict()
-        return JSONResponse(status_code=200, content=models_metadata_collection)
+        model_metadata_collection = model_manager.get_models()
+        model_metadata_collection = ModelMetadataCollection(**{"models": model_metadata_collection}).dict()
+        return JSONResponse(status_code=200, content=model_metadata_collection)
     except Exception as e:
         error = Error(type="ServiceError", message=str(e)).dict()
         return JSONResponse(status_code=500, content=error)

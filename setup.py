@@ -19,8 +19,13 @@ setup(name=__name__,
       long_description_content_type="text/markdown",
       url="https://github.com/schmidtbri/ml-base",
       packages=find_packages(exclude=["tests", "*tests", "tests*"]),
+      entry_points={
+          'console_scripts': [
+              'generate_openapi=rest_model_service.generate_openapi:main',
+          ]
+      },
       python_requires=">=3.5",
-      install_requires=["ml-base", "fastapi", "uvicorn"],
+      install_requires=["ml-base", "fastapi", "uvicorn", "pyyaml"],
       tests_require=['pytest', 'pytest-html', 'pylama', 'coverage', 'coverage-badge', 'bandit', 'safety', "pytype",
                      "flake8-annotations"],
       classifiers=[
