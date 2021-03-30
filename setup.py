@@ -4,10 +4,12 @@ from setuptools import setup, find_packages
 
 from rest_model_service import __name__, __version__, __doc__
 
-# Get the long description from the README file
 here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
+
+with open(path.join(here, 'LICENSE'), encoding='utf-8') as f:
+    license_text = f.read()
 
 
 setup(name=__name__,
@@ -17,7 +19,8 @@ setup(name=__name__,
       description=__doc__,
       long_description=long_description,
       long_description_content_type="text/markdown",
-      url="https://github.com/schmidtbri/ml-base",
+      url="https://github.com/schmidtbri/rest-model-service",
+      license=license_text,
       packages=find_packages(exclude=["tests", "*tests", "tests*"]),
       entry_points={
           'console_scripts': [

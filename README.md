@@ -35,11 +35,22 @@ you can point the script to the right path like this:
 
 ```bash
 export REST_CONFIG=examples/rest_config.yaml
-generate_openapi --output_file="openapi.yaml"
+generate_openapi --output_file=example.yaml
 ```
 
 The rest_config.yaml file is provided in the examples folder. It points at a model class in the tests
 package.
+
+If you get an error that says something about not being able to find a module, you might need to update your 
+PYTHONPATH environment variable:
+
+```bash
+export PYTHONPATH=./
+```
+
+The service relies on being able to find the model class in the python environment to load it and instantiate it. 
+If your python interpreter is not able to find the model class, then the script wont be able to create an OpenAPI
+contract for it. 
 
 ## Running the Service
 
@@ -57,7 +68,7 @@ export REST_CONFIG='examples/rest_config.yaml'
 uvicorn rest_model_service.main:app --reload
 ```
 
-## Downloading and Setting Up for Development 
+## Downloading Code and Setting Up for Development 
 
 To download the code and set up a development environment use these instructions. 
 
@@ -71,7 +82,7 @@ Then create a virtual environment and activate it:
 
 ```bash
 # go into the project directory
-cd ml-base
+cd rest-model-service
 
 make venv
 
