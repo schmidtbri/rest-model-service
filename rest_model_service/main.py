@@ -10,7 +10,7 @@ from ml_base.utilities import ModelManager
 from rest_model_service import __version__
 from rest_model_service.configuration import Configuration, Model
 from rest_model_service.schemas import Error, ModelMetadataCollection
-from rest_model_service.routes import get_root, get_models, PredictionController     # noqa: F401,E402
+from rest_model_service.routes import get_root, get_models, PredictionController  # noqa: F401,E402
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ def create_app(service_title: str,  models: List[Model]) -> FastAPI:
                                   500: {"model": Error}
                               })
         else:
-            logger.info("Skipped creating an endpoint for model:{}".format(model.qualified_name))
+            logger.info("Skipped creating an endpoint for model: {}".format(model.qualified_name))
 
     return app
 
