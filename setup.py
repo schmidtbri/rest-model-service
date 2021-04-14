@@ -4,12 +4,11 @@ from setuptools import setup, find_packages
 
 from rest_model_service import __name__, __version__, __doc__
 
-here = path.abspath(path.dirname(__file__))
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
 
-with open(path.join(here, 'LICENSE'), encoding='utf-8') as f:
-    license_text = f.read()
+def load_file(file_name):
+    here = path.abspath(path.dirname(__file__))
+    with open(path.join(here, file_name)) as f:
+        return f.read()
 
 
 setup(name=__name__,
@@ -17,10 +16,10 @@ setup(name=__name__,
       author="Brian Schmidt",
       author_email="6666331+schmidtbri@users.noreply.github.com",
       description=__doc__,
-      long_description=long_description,
+      long_description=load_file("README.md"),
       long_description_content_type="text/markdown",
       url="https://github.com/schmidtbri/rest-model-service",
-      license=license_text,
+      license="BSD",
       packages=find_packages(exclude=["tests", "*tests", "tests*"]),
       entry_points={
           'console_scripts': [
