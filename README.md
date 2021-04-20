@@ -10,7 +10,8 @@ The package can be installed from pypi:
 pip install rest_model_service
 ```
 
-To use the service you must first have a working model class that uses the MLModel base class from the ml_base package.
+To use the service you must first have a working model class that uses the MLModel base class from the 
+[ml_base package](https://schmidtbri.github.io/ml-base/).
 
 You can then set up a configuration file that points at the model class, the configuration file should look like this:
 
