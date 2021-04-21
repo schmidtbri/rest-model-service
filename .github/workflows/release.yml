@@ -27,22 +27,30 @@ jobs:
           sed 's/<version_placeholder>/'"${SOURCE_TAG:1}"'/g' rest_model_service/__init__.py > __init__.py
           mv __init__.py rest_model_service/__init__.py
       - name: "Build and Publish to Test PyPi"
-        if: ${{ github.ref != 'refs/heads/main' }}
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
           TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
         run: |
-          echo $GITHUB_REF
-          make build
-          twine upload dist/*
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo $CURRENT_BRANCH
+          if [ "$CURRENT_BRANCH" != "main" ]; then
+            make build
+            twine upload dist/*
+          else
+            echo "Not uploading to PyPi"
+          fi
       - name: "Build and Publish to PyPi"
-        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
           TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
         run: |
-          echo $GITHUB_REF
-          make build
-          twine upload dist/*
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo $CURRENT_BRANCH
+          if [ "$CURRENT_BRANCH" = "main" ]; then
+            make build
+            twine upload dist/*
+          else
+            echo "Not uploading to PyPi"
+          fi
