@@ -32,8 +32,6 @@ jobs:
       run: make check-security
     - name: "Dependency Security"
       run: make check-dependencies
-    - name: "Static Analysis"
-      run: make check-pytype
     - name: "Run Unit Tests"
       run: make test-reports
     - name: "Archive Unit Test Report"
