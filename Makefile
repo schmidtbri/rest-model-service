@@ -22,7 +22,7 @@ clean-build:  ## clean build artifacts
 	rm -rf rest_model_service.egg-info
 
 venv: ## create virtual environment
-	python3 -m venv venv
+	python3.9 -m venv venv
 
 dependencies: ## install dependencies from requirements.txt
 	python -m pip install --upgrade pip
@@ -32,6 +32,10 @@ dependencies: ## install dependencies from requirements.txt
 
 test-dependencies: ## install dependencies from test_requirements.txt
 	pip install -r test_requirements.txt
+
+update-dependencies:  ## Update dependency versions
+	pip-compile requirements.in > requirements.txt
+	pip-compile test_requirements.in > test_requirements.txt
 
 clean-venv: ## remove all packages from virtual environment
 	pip freeze | grep -v "^-e" | xargs pip uninstall -y

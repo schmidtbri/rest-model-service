@@ -2,14 +2,15 @@ import os
 from pathlib import Path
 
 import unittest
+from unittest.mock import Mock
 import json
 from starlette.testclient import TestClient
 from ml_base.utilities import ModelManager
+from ml_base.ml_model import MLModelSchemaValidationException
 
 os.chdir(Path(__file__).resolve().parent.parent.parent)
-os.environ["REST_CONFIG"] = "examples/rest_config.yaml"
 
-from rest_model_service.main import app, create_app
+from rest_model_service.main import create_app
 from rest_model_service.configuration import Model
 
 
@@ -17,6 +18,10 @@ class RoutesTests(unittest.TestCase):
 
     def test_root(self):
         # arrange
+        app = create_app("REST Model Service", [Model(qualified_name="iris_model",
+                                                      class_path="tests.mocks.IrisModel",
+                                                      create_endpoint=True)])
+
         client = TestClient(app)
 
         # act
@@ -31,6 +36,10 @@ class RoutesTests(unittest.TestCase):
 
     def test_get_models(self):
         # arrange
+        app = create_app("REST Model Service", [Model(qualified_name="iris_model",
+                                                      class_path="tests.mocks.IrisModel",
+                                                      create_endpoint=True)])
+
         client = TestClient(app)
 
         # act
@@ -54,8 +63,37 @@ class RoutesTests(unittest.TestCase):
         model_manager = ModelManager()
         model_manager.clear_instance()
 
+    def test_get_models_with_exception(self):
+        # arrange
+        app = create_app("REST Model Service", [Model(qualified_name="iris_model",
+                                                      class_path="tests.mocks.IrisModel",
+                                                      create_endpoint=True)])
+
+        client = TestClient(app)
+
+        model_manager = ModelManager()
+        model_manager.get_models = Mock(side_effect=Exception("Exception!"))
+
+        # act
+        response = client.get("/api/models")
+
+        # assert
+        self.assertTrue(response.status_code == 500)
+        self.assertTrue(response.json() == {
+            "type": "ServiceError",
+            "message": "Exception!"
+        })
+
+        # cleanup
+        model_manager = ModelManager()
+        model_manager.clear_instance()
+
     def test_prediction(self):
         # arrange
+        app = create_app("REST Model Service", [Model(qualified_name="iris_model",
+                                                      class_path="tests.mocks.IrisModel",
+                                                      create_endpoint=True)])
+
         client = TestClient(app)
 
         # act
@@ -70,6 +108,68 @@ class RoutesTests(unittest.TestCase):
         self.assertTrue(response.status_code == 200)
         self.assertTrue(response.json() == {
             "species": "Iris setosa"
+        })
+
+        # cleanup
+        model_manager = ModelManager()
+        model_manager.clear_instance()
+
+    def test_prediction_with_validation_exception_raised_in_model_predict_method(self):
+        # arrange
+        app = create_app("REST Model Service", [Model(qualified_name="iris_model",
+                                                      class_path="tests.mocks.IrisModel",
+                                                      create_endpoint=True)])
+
+        client = TestClient(app)
+
+        model_manager = ModelManager()
+        model = model_manager.get_model("iris_model")
+        model.predict = Mock(side_effect=MLModelSchemaValidationException("Exception!"))
+
+        # act
+        response = client.post("/api/models/iris_model/prediction", data=json.dumps({
+            "sepal_length": 6.0,
+            "sepal_width": 5.0,
+            "petal_length": 3.0,
+            "petal_width": 2.0
+        }))
+
+        # assert
+        self.assertTrue(response.status_code == 400)
+        self.assertTrue(response.json() == {
+            "type": "SchemaValidationError",
+            "message": "Exception!"
+        })
+
+        # cleanup
+        model_manager = ModelManager()
+        model_manager.clear_instance()
+
+    def test_prediction_with_exception_raised_in_model_predict_method(self):
+        # arrange
+        app = create_app("REST Model Service", [Model(qualified_name="iris_model",
+                                                      class_path="tests.mocks.IrisModel",
+                                                      create_endpoint=True)])
+
+        client = TestClient(app)
+
+        model_manager = ModelManager()
+        model = model_manager.get_model("iris_model")
+        model.predict = Mock(side_effect=Exception("Exception!"))
+
+        # act
+        response = client.post("/api/models/iris_model/prediction", data=json.dumps({
+            "sepal_length": 6.0,
+            "sepal_width": 5.0,
+            "petal_length": 3.0,
+            "petal_width": 2.0
+        }))
+
+        # assert
+        self.assertTrue(response.status_code == 500)
+        self.assertTrue(response.json() == {
+            "type": "ServiceError",
+            "message": "Exception!"
         })
 
         # cleanup

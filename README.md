@@ -29,6 +29,38 @@ The qualified name of your model and the class path to your model class should b
 configuration file. The create_endpoint option is there for cases when you might want to load a model but not create
 an endpoint for it.
 
+The rest_model_service package also supports decorators as defined in the ml_base package and explained 
+[here](https://schmidtbri.github.io/ml-base/decorator/). A decorator can be added to a model by adding the "decorators" 
+key to the model's configuration:
+
+```yaml
+service_title: REST Model Service With Decorators
+models:
+  - qualified_name: iris_model
+    class_path: tests.mocks.IrisModel
+    create_endpoint: true
+    decorators:
+      - class_path: tests.mocks.PredictionIDDecorator
+```
+
+The PredictionIDDecorator will be instantiated and added to the IrisModel instance at application startup. Parameters
+can also be provided to the decorator's \_\_init\_\_() method like this:
+
+```yaml
+service_title: REST Model Service With Decorators
+models:
+  - qualified_name: iris_model
+    class_path: tests.mocks.IrisModel
+    create_endpoint: true
+    decorators:
+      - class_path: tests.mocks.PredictionIDDecorator
+        configuration:
+          parameter1: "asdf"
+          parameter2: "zxcv"
+```
+
+The configuration dictionary will be passed to the decorator as keyword arguments.
+
 ## Creating an OpenAPI Contract
 
 An OpenAPI contract can be generated dynamically for your models as hosted within the REST model service. To create 
