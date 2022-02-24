@@ -2,8 +2,6 @@ from os import path
 from io import open
 from setuptools import setup, find_packages
 
-from rest_model_service import __name__, __version__, __doc__
-
 
 def load_file(file_name):
     here = path.abspath(path.dirname(__file__))
@@ -11,11 +9,11 @@ def load_file(file_name):
         return f.read()
 
 
-setup(name=__name__,
-      version=__version__,
+setup(name="rest_model_service",
+      version=load_file("rest_model_service/version.txt"),
       author="Brian Schmidt",
       author_email="6666331+schmidtbri@users.noreply.github.com",
-      description=__doc__,
+      description="RESTful service for hosting machine learning models.",
       long_description=load_file("README.md"),
       long_description_content_type="text/markdown",
       url="https://github.com/schmidtbri/rest-model-service",
@@ -27,9 +25,14 @@ setup(name=__name__,
           ]
       },
       python_requires=">=3.5",
-      install_requires=["ml-base", "fastapi", "uvicorn", "pyyaml"],
+      install_requires=["ml-base>=0.2.0", "fastapi", "uvicorn", "pyyaml"],
       tests_require=['pytest', 'pytest-html', 'pylama', 'coverage', 'coverage-badge', 'bandit', 'safety', "pytype",
                      "flake8-annotations"],
+      package_data={
+          "rest_model_service": [
+                  "version.txt"
+            ]
+      },
       classifiers=[
           "Programming Language :: Python :: 3",
           "Intended Audience :: Developers",

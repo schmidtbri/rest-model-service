@@ -47,7 +47,11 @@ class SomeClass(object):
 
 
 class PredictionIDDecorator(MLModelDecorator):
-    """Decorator that modifies the input and output schemas of the model object."""
+
+    @property
+    def description(self) -> str:
+        decorator_description = " This model also has an optional input called 'prediction_id' that accepts an UUID string to uniquely identify the prediction returned. If the prediction id is not provided, a UUID is generated and returned in a field called 'prediction_id' in the model output."
+        return self._model.description + decorator_description
 
     @property
     def input_schema(self):
@@ -70,7 +74,7 @@ class PredictionIDDecorator(MLModelDecorator):
         return new_output_schema
 
     def predict(self, data):
-        if data.prediction_id is not None:
+        if hasattr(data, "prediction_id") and data.prediction_id is not None:
             prediction_id = data.prediction_id
         else:
             prediction_id = str(uuid4())

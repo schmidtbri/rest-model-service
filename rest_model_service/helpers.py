@@ -21,5 +21,3 @@ def load_type(class_path: str) -> Type:
     _module = importlib.import_module(module_path)
     _class = getattr(_module, class_name)
     return _class
-
-

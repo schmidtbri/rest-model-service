@@ -1,5 +1,6 @@
 """Service app and startup function."""
 import os
+import warnings
 from os import path
 import logging
 import yaml
@@ -95,4 +96,6 @@ if path.exists(file_path) and path.isfile(file_path):
     configuration = Configuration(**configuration)
     app = create_app(configuration.service_title, configuration.models)
 else:
-    raise ValueError("Could not find configuration file '{}'.".format(file_path))
+    # if there is no configuration file or it is not found, then create an empty app and raise a warning
+    app = create_app("REST Model Service", [])
+    warnings.warn("Could not find configuration file '{}', service has no models loaded.".format(file_path))

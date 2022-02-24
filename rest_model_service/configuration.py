@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 class ModelDecorator(BaseModel):
     """Settings for a decorator for a model instance in the service."""
+
     class_path: str = Field(description="Class path of the decorator class.")
     configuration: Optional[Dict[Any, Any]] = Field(description="Configuration to initialize decorator instance.")
 
