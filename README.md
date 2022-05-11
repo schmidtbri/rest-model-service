@@ -1,6 +1,10 @@
-# REST Model Service
+![Code Quality Status](https://github.com/schmidtbri/rest-model-service/actions/workflows/test.yml/badge.svg)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-green)](https://opensource.org/licenses/BSD-3-Clause)
+[![PyPi](https://img.shields.io/badge/pypi-v0.2.1-green)](https://pypi.org/project/rest-model-service/)
 
-RESTful service for hosting machine learning models.
+# rest-model-service
+
+**rest-model-service** is a package for building RESTful services for hosting machine learning models.
 
 ## Installation
 
@@ -9,6 +13,8 @@ The package can be installed from pypi:
 ```bash
 pip install rest_model_service
 ```
+
+## Usage 
 
 To use the service you must first have a working model class that uses the MLModel base class from the 
 [ml_base package](https://schmidtbri.github.io/ml-base/).
@@ -44,7 +50,7 @@ models:
 ```
 
 The PredictionIDDecorator will be instantiated and added to the IrisModel instance at application startup. Parameters
-can also be provided to the decorator's \_\_init\_\_() method like this:
+can also be provided to the decorator's `__init__()` method like this:
 
 ```yaml
 service_title: REST Model Service With Decorators
@@ -61,7 +67,7 @@ models:
 
 The configuration dictionary will be passed to the decorator as keyword arguments.
 
-## Creating an OpenAPI Contract
+### Creating an OpenAPI Contract
 
 An OpenAPI contract can be generated dynamically for your models as hosted within the REST model service. To create 
 the contract and save it execute this command:
@@ -94,7 +100,7 @@ The service relies on being able to find the model class in the python environme
 If your python interpreter is not able to find the model class, then the script won't be able to create an OpenAPI
 contract for it. 
 
-## Running the Service
+### Running the Service
 
 To start the service in development mode, execute this command:
 
@@ -110,11 +116,9 @@ export REST_CONFIG='examples/rest_config.yaml'
 uvicorn rest_model_service.main:app --reload
 ```
 
-## Downloading Code and Setting Up for Development 
+## Development
 
-To download the code and set up a development environment use these instructions. 
-
-To download the source code execute this command:
+First, download the source code with this command:
 
 ```bash
 git clone https://github.com/schmidtbri/rest-model-service
@@ -137,7 +141,7 @@ Install the dependencies:
 make dependencies
 ```
 
-## Running the Unit Tests
+## Testing
 
 To run the unit test suite execute these commands:
 
