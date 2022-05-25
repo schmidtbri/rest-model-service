@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
-- The application used to raise a warning when it could not find the YAML configuration file. It 
+- The application used to raise a warning when it could not find the YAML configuration file and created an empty 
+application. Now a warning is raised but no application is created.
 
 ## [0.2.1] - 2022-05-10
 
