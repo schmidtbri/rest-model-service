@@ -1,0 +1,24 @@
+service_title: REST Model Service With Logging
+models:
+  - qualified_name: iris_model
+    class_path: tests.mocks.IrisModel
+    create_endpoint: true
+logging:
+    version: 1
+    disable_existing_loggers: false
+    formatters:
+      simple_formatter:
+        class: logging.Formatter
+        format: "%(asctime)s %(pathname)s %(lineno)s %(levelname)s %(message)s"
+    handlers:
+      stdout:
+        level: DEBUG
+        class: logging.StreamHandler
+        stream: ext://sys.stdout
+        formatter: simple_formatter
+    loggers:
+      "":
+        level: DEBUG
+        handlers:
+        - stdout
+        propagate: false
