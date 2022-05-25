@@ -16,6 +16,10 @@ from rest_model_service.configuration import Model
 
 class RoutesTests(unittest.TestCase):
 
+    def tearDown(self) -> None:
+        model_manager = ModelManager()
+        model_manager.clear_instance()
+
     def test_root(self):
         # arrange
         app = create_app("REST Model Service", [Model(qualified_name="iris_model",
@@ -29,10 +33,6 @@ class RoutesTests(unittest.TestCase):
 
         # assert
         self.assertTrue(response.status_code == 200)
-
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
 
     def test_get_models(self):
         # arrange
@@ -59,10 +59,6 @@ class RoutesTests(unittest.TestCase):
                 ]
         })
 
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
-
     def test_get_models_with_exception(self):
         # arrange
         app = create_app("REST Model Service", [Model(qualified_name="iris_model",
@@ -83,10 +79,6 @@ class RoutesTests(unittest.TestCase):
             "type": "ServiceError",
             "message": "Exception!"
         })
-
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
 
     def test_prediction(self):
         # arrange
@@ -109,10 +101,6 @@ class RoutesTests(unittest.TestCase):
         self.assertTrue(response.json() == {
             "species": "Iris setosa"
         })
-
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
 
     def test_prediction_with_validation_exception_raised_in_model_predict_method(self):
         # arrange
@@ -141,10 +129,6 @@ class RoutesTests(unittest.TestCase):
             "message": "Exception!"
         })
 
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
-
     def test_prediction_with_exception_raised_in_model_predict_method(self):
         # arrange
         app = create_app("REST Model Service", [Model(qualified_name="iris_model",
@@ -172,10 +156,6 @@ class RoutesTests(unittest.TestCase):
             "message": "Exception!"
         })
 
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
-
     def test_prediction_with_bad_data(self):
         # arrange
         app = create_app("REST Model Service", [Model(qualified_name="iris_model",
@@ -195,20 +175,12 @@ class RoutesTests(unittest.TestCase):
         # assert
         self.assertTrue(response.status_code == 422)
 
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
-
     def test_prediction_with_bad_configuration(self):
         # arrange, act, assert
         with self.assertRaises(ValueError) as e:
             app = create_app("REST Model Service", [Model(qualified_name="asdf",
                                                           class_path="tests.mocks.IrisModel",
                                                           create_endpoint=True)])
-
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
 
     def test_prediction_with_no_endpoint(self):
         # arrange
@@ -228,10 +200,6 @@ class RoutesTests(unittest.TestCase):
 
         # assert
         self.assertTrue(response.status_code == 404)
-
-        # cleanup
-        model_manager = ModelManager()
-        model_manager.clear_instance()
 
 
 if __name__ == '__main__':

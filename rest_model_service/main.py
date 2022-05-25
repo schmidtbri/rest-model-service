@@ -3,8 +3,9 @@ import os
 import warnings
 from os import path
 import logging
+import logging.config
 import yaml
-from typing import List
+from typing import List, Dict, Optional
 from fastapi import FastAPI
 from ml_base.utilities import ModelManager
 
@@ -14,11 +15,16 @@ from rest_model_service.helpers import load_type
 from rest_model_service.routes import get_root, get_models, PredictionController  # noqa: F401,E402
 from rest_model_service.schemas import Error, ModelMetadataCollection
 
-logger = logging.getLogger(__name__)
 
-
-def create_app(service_title: str,  models: List[Model]) -> FastAPI:
+def create_app(service_title: str, models: List[Model], logging_configuration: Optional[Dict] = None) -> FastAPI:
     """Create instance of FastAPI app and return it."""
+    # setting up the logging configuration
+    if logging_configuration is not None:
+        logging.config.dictConfig(logging_configuration)
+
+    logger = logging.getLogger(__name__)
+    logger.info("Starting '{}'.".format(service_title))
+
     app: FastAPI = FastAPI(title=service_title,
                            version=__version__)
 
@@ -44,6 +50,8 @@ def create_app(service_title: str,  models: List[Model]) -> FastAPI:
         # adding the model instance to the ModelManager
         model_manager.add_model(model_instance)
 
+        logger.info("Loaded {} model.".format(model_instance.qualified_name))
+
         decorators = model.decorators if model.decorators is not None else []
 
         # initializing decorators for the model
@@ -59,6 +67,9 @@ def create_app(service_title: str,  models: List[Model]) -> FastAPI:
 
             # adding the decorator to the model in the ModelManager
             model_manager.add_decorator(model.qualified_name, decorator_instance)
+
+            logger.info("Added {} decorator to {} model.".format(decorator_class.__name__,
+                                                                 model_instance.qualified_name))
 
         # creating an endpoint for each model, if the configuration allows it
         if model.create_endpoint:
@@ -76,6 +87,7 @@ def create_app(service_title: str,  models: List[Model]) -> FastAPI:
                                   400: {"model": Error},
                                   500: {"model": Error}
                               })
+            logger.info("Created endpoint for {} model.".format(model.qualified_name))
         else:
             logger.info("Skipped creating an endpoint for model: {}".format(model.qualified_name))
 
@@ -84,7 +96,7 @@ def create_app(service_title: str,  models: List[Model]) -> FastAPI:
 
 # getting the path to the configuration file
 # defaults to "rest_config.yaml" in the current directory if not provided
-if os.environ.get("REST_CONFIG") is not None:
+if "REST_CONFIG" in os.environ:
     file_path = os.environ["REST_CONFIG"]
 else:
     file_path = "rest_config.yaml"
@@ -94,8 +106,7 @@ if path.exists(file_path) and path.isfile(file_path):
     with open(file_path) as file:
         configuration = yaml.full_load(file)
     configuration = Configuration(**configuration)
-    app = create_app(configuration.service_title, configuration.models)
+    app = create_app(configuration.service_title, configuration.models, configuration.logging)
 else:
-    # if there is no configuration file or it is not found, then create an empty app and raise a warning
-    app = create_app("REST Model Service", [])
+    # if there is no configuration file or it is not found, then raise a warning
     warnings.warn("Could not find configuration file '{}', service has no models loaded.".format(file_path))

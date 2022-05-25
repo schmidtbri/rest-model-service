@@ -1,6 +1,6 @@
 ![Code Quality Status](https://github.com/schmidtbri/rest-model-service/actions/workflows/test.yml/badge.svg)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-green)](https://opensource.org/licenses/BSD-3-Clause)
-[![PyPi](https://img.shields.io/badge/pypi-v0.2.1-green)](https://pypi.org/project/rest-model-service/)
+[![PyPi](https://img.shields.io/badge/pypi-v0.3.0-green)](https://pypi.org/project/rest-model-service/)
 
 # rest-model-service
 
@@ -35,6 +35,8 @@ The qualified name of your model and the class path to your model class should b
 configuration file. The create_endpoint option is there for cases when you might want to load a model but not create
 an endpoint for it.
 
+### Adding a Decorator to a Model
+
 The rest_model_service package also supports decorators as defined in the ml_base package and explained 
 [here](https://schmidtbri.github.io/ml-base/decorator/). A decorator can be added to a model by adding the "decorators" 
 key to the model's configuration:
@@ -66,6 +68,40 @@ models:
 ```
 
 The configuration dictionary will be passed to the decorator as keyword arguments.
+
+### Adding Logging Configuration
+
+The service also optionally accepts logging configuration through the YAML configuration file:
+
+```yaml
+service_title: REST Model Service With Logging
+models:
+  - qualified_name: iris_model
+    class_path: tests.mocks.IrisModel
+    create_endpoint: true
+logging:
+    version: 1
+    disable_existing_loggers: true
+    formatters:
+      formatter:
+        class: logging.Formatter
+        format: "%(asctime)s %(pathname)s %(lineno)s %(levelname)s %(message)s"
+    handlers:
+      stdout:
+        level: INFO
+        class: logging.StreamHandler
+        stream: ext://sys.stdout
+        formatter: formatter
+    loggers:
+      root:
+        level: INFO
+        handlers:
+        - stdout
+        propagate: false
+```
+
+The YAML needs to be formatted so that it deserializes to a dictionary that matches the logging package's [configuration
+dictionary schema](https://docs.python.org/3/library/logging.config.html#logging-config-dictschema).
 
 ### Creating an OpenAPI Contract
 
@@ -118,7 +154,7 @@ uvicorn rest_model_service.main:app --reload
 
 ## Development
 
-First, download the source code with this command:
+Download the source code with this command:
 
 ```bash
 git clone https://github.com/schmidtbri/rest-model-service
