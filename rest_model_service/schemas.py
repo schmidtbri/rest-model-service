@@ -22,4 +22,4 @@ class Error(BaseModel):
     """Error."""
 
     type: str = Field(description="The type of error.")
-    message: str = Field(description="The error message.")
+    messages: List[str] = Field(description="List of error messages.")

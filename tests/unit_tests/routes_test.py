@@ -77,7 +77,7 @@ class RoutesTests(unittest.TestCase):
         self.assertTrue(response.status_code == 500)
         self.assertTrue(response.json() == {
             "type": "ServiceError",
-            "message": "Exception!"
+            "messages": ["Exception!"]
         })
 
     def test_prediction(self):
@@ -126,7 +126,7 @@ class RoutesTests(unittest.TestCase):
         self.assertTrue(response.status_code == 400)
         self.assertTrue(response.json() == {
             "type": "SchemaValidationError",
-            "message": "Exception!"
+            "messages": ["Exception!"]
         })
 
     def test_prediction_with_exception_raised_in_model_predict_method(self):
@@ -153,7 +153,7 @@ class RoutesTests(unittest.TestCase):
         self.assertTrue(response.status_code == 500)
         self.assertTrue(response.json() == {
             "type": "ServiceError",
-            "message": "Exception!"
+            "messages": ["Exception!"]
         })
 
     def test_prediction_with_bad_data(self):
@@ -173,7 +173,7 @@ class RoutesTests(unittest.TestCase):
         }))
 
         # assert
-        self.assertTrue(response.status_code == 422)
+        self.assertTrue(response.status_code == 400)
 
     def test_prediction_with_bad_configuration(self):
         # arrange, act, assert
