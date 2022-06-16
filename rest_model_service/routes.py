@@ -29,7 +29,7 @@ async def get_models():   # noqa: ANN201
         model_metadata_collection = ModelMetadataCollection(**{"models": model_metadata_collection}).dict()
         return JSONResponse(status_code=200, content=model_metadata_collection)
     except Exception as e:
-        error = Error(type="ServiceError", message=str(e)).dict()
+        error = Error(type="ServiceError", messages=[str(e)]).dict()
         return JSONResponse(status_code=500, content=error)
 
 
@@ -54,10 +54,10 @@ class PredictionController(object):
         except MLModelSchemaValidationException as e:
             logger.exception("Error when making a prediction  prediction with model '{}'.".
                              format(self._model.qualified_name), exc_info=e)
-            error = Error(type="SchemaValidationError", message=str(e)).dict()
+            error = Error(type="SchemaValidationError", messages=[str(e)]).dict()
             return JSONResponse(status_code=400, content=error)
         except Exception as e:
             logger.exception("Error when making a prediction  prediction with model '{}'.".
                              format(self._model.qualified_name), exc_info=e)
-            error = Error(type="ServiceError", message=str(e)).dict()
+            error = Error(type="ServiceError", messages=[str(e)]).dict()
             return JSONResponse(status_code=500, content=error)

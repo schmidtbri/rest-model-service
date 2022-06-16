@@ -7,12 +7,14 @@ import logging.config
 import yaml
 from typing import List, Dict, Optional
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from ml_base.utilities import ModelManager
 
 from rest_model_service import __version__
 from rest_model_service.configuration import Configuration, Model
 from rest_model_service.helpers import load_type
 from rest_model_service.routes import get_root, get_models, PredictionController  # noqa: F401,E402
+from rest_model_service.exception_handlers import validation_exception_handler
 from rest_model_service.schemas import Error, ModelMetadataCollection
 
 
@@ -27,6 +29,9 @@ def create_app(service_title: str, models: List[Model], logging_configuration: O
 
     app: FastAPI = FastAPI(title=service_title,
                            version=__version__)
+
+    # adding a custom exception handler for validation errors
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
     # adding the routes like this to avoid a circular dependency
     app.add_api_route("/", get_root, methods=["GET"])
