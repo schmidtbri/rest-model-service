@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, create_model
 from enum import Enum
 from uuid import UUID, uuid4
 from typing import Optional
+import time
 
 from ml_base.ml_model import MLModel
 from ml_base.decorator import MLModelDecorator
@@ -36,6 +37,39 @@ class IrisModel(MLModel):
 
     def __init__(self):
         pass
+
+    def predict(self, data):
+        return IrisModelOutput(species=Species.iris_setosa)
+
+
+class SlowIrisModel(MLModel):
+    # accessing the package metadata
+    display_name = "Slow Iris Model"
+    qualified_name = "slow_iris_model"
+    description = "Model for predicting the species of a flower based on its measurements, loads slowly."
+    version = "1.0.0"
+    input_schema = IrisModelInput
+    output_schema = IrisModelOutput
+
+    def __init__(self):
+        time.sleep(5)  # sleeping for 5 seconds to simulate a slow-loading model
+
+    def predict(self, data):
+        return IrisModelOutput(species="Iris setosa")
+
+
+class IrisModelWithException(MLModel):
+    # accessing the package metadata
+    display_name = "Iris Model With Exception"
+    qualified_name = "iris_model_with_exception"
+    description = "Model for predicting the species of a flower based on its measurements, raises exception in init."
+    version = "1.0.0"
+    input_schema = IrisModelInput
+    output_schema = IrisModelOutput
+
+    def __init__(self):
+        time.sleep(2)
+        raise Exception("Exception in init!")
 
     def predict(self, data):
         return IrisModelOutput(species="Iris setosa")

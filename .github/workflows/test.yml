@@ -6,52 +6,54 @@ on:
       - main
 
 jobs:
-  test:
+  inspect:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-
+    - uses: actions/checkout@v3
     - name: "Set up Python 3.9"
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
-
     - name: "Install Dependencies"
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install --upgrade setuptools
-        python -m pip install --upgrade wheel
-        make dependencies
-
+      run: make dependencies
     - name: "Install Test Dependencies"
       run : make test-dependencies
-
     - name: "Check Codestyle"
       run: make check-codestyle
-
     - name: "Check Docstyle"
       run: make check-docstyle
-
     - name: "Code Metrics"
       run: make check-codemetrics
-
     - name: "Security Issues"
       run: make check-security
-
     - name: "Dependency Security"
       run: make check-dependencies
 
+  test-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9", "3.10" ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: "Set up Python"
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: "Install Dependencies"
+      run: make dependencies
+    - name: "Install Test Dependencies"
+      run: make test-dependencies
     - name: "Run Unit Tests"
       run: make test-reports
-
     - name: "Archive Unit Test Report"
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: unit-test-report
-        path: reports/unit_tests
-
+        path: reports/unit
     - name: "Archive Code Coverage Report"
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: code-coverage-report
         path: reports/coverage

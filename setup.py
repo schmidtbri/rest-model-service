@@ -20,14 +20,14 @@ setup(name="rest_model_service",
       license="BSD",
       packages=find_packages(exclude=["tests", "*tests", "tests*"]),
       entry_points={
-          'console_scripts': [
-              'generate_openapi=rest_model_service.generate_openapi:main',
+          "console_scripts": [
+              "generate_openapi=rest_model_service.generate_openapi:main",
           ]
       },
       python_requires=">=3.5",
       install_requires=["ml-base>=0.2.0", "fastapi", "uvicorn", "pyyaml"],
-      tests_require=['pytest', 'pytest-html', 'pylama', 'coverage', 'coverage-badge', 'bandit', 'safety', "pytype",
-                     "flake8-annotations"],
+      tests_require=["pytest", "pytest-html", "pylama", "coverage", "coverage-badge", "radon", "bandit", "safety",
+                     "pytype", "flake8-annotations"],
       package_data={
           "rest_model_service": [
                   "version.txt"
