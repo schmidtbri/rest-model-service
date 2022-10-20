@@ -30,5 +30,5 @@ typing-extensions==4.4.0
     # via
     #   pydantic
     #   starlette
-uvicorn==0.18.3
+uvicorn==0.19.0
     # via -r requirements.in

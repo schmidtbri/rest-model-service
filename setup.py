@@ -24,10 +24,10 @@ setup(name="rest_model_service",
               "generate_openapi=rest_model_service.generate_openapi:main",
           ]
       },
-      python_requires=">=3.5",
+      python_requires=">=3.7",
       install_requires=["ml-base>=0.2.0", "fastapi", "uvicorn", "pyyaml"],
       tests_require=["pytest", "pytest-html", "pylama", "coverage", "coverage-badge", "radon", "bandit", "safety",
-                     "pytype", "flake8-annotations"],
+                     "flake8-annotations"],
       package_data={
           "rest_model_service": [
                   "version.txt"

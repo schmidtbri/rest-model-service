@@ -91,7 +91,7 @@ def create_app(configuration: Configuration, wait_for_model_creation: bool = Fal
 
 
 def set_service_status(future: Future) -> None:
-    """Callback that sets the status of the service according to the results of the build_models thread.
+    """Set the status of the service according to the results of the build_models thread.
 
     Args:
         future: Future for the build_models task.

@@ -65,7 +65,6 @@ clean-test:	## Remove test artifacts
 	rm -rf .pytest_cache
 	rm -rf .coverage
 	rm -rf reports
-	rm -rf .pytype
 .PHONY: clean-test
 
 check-codestyle:  ## Check the style of the code against PEP8
@@ -87,10 +86,6 @@ check-dependencies:  ## Check for security vulnerabilities in dependencies
 check-codemetrics:  ## Calculate code metrics of the package
 	radon cc rest_model_service
 .PHONY: check-codemetrics
-
-check-pytype:  ## Perform static code analysis
-	pytype rest_model_service
-.PHONY: check-pytype
 
 check-annotations: ## Check for type annotations coverage
 	flake8 rest_model_service --max-line-length=120
