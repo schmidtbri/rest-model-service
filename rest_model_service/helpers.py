@@ -86,7 +86,6 @@ def create_app(configuration: Configuration, wait_for_model_creation: bool = Fal
     # this is useful for creating the app object for tests and for getting the full OpenAPI spec from the app
     if wait_for_model_creation:
         _ = future.result()
-        executor.shutdown()
     return app
 
 

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added health, readiness, and startup check endpoints added to the service API.
-- Added StatusManager to manage status info in a central place.
+- Added StatusManager singleton to manage status info in a central place.
 - Added service description and service version options to configuration.
 - Added a model metadata endpoint that returns the full metadata for a given model.
 

@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-
+# TODO: add dependency caching
 jobs:
   inspect:
     runs-on: ubuntu-latest
