@@ -23,5 +23,7 @@ class Configuration(BaseModel):
     """Configuration for the service."""
 
     service_title: str = "RESTful Model Service"
-    models: List[Model] = Field(description="Model configuration.")
+    version: str = "0.1.0"
+    description: str = ""
+    models: List[Model] = Field([], description="Model configuration.")
     logging: Optional[Dict] = Field(description="Logging configuration.")

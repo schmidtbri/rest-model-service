@@ -6,5 +6,4 @@ pylama
 radon
 bandit
 safety
-pytype
 flake8-annotations

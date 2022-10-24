@@ -20,13 +20,13 @@ setup(name="rest_model_service",
       license="BSD",
       packages=find_packages(exclude=["tests", "*tests", "tests*"]),
       entry_points={
-          'console_scripts': [
-              'generate_openapi=rest_model_service.generate_openapi:main',
+          "console_scripts": [
+              "generate_openapi=rest_model_service.generate_openapi:main",
           ]
       },
-      python_requires=">=3.5",
+      python_requires=">=3.7",
       install_requires=["ml-base>=0.2.0", "fastapi", "uvicorn", "pyyaml"],
-      tests_require=['pytest', 'pytest-html', 'pylama', 'coverage', 'coverage-badge', 'bandit', 'safety', "pytype",
+      tests_require=["pytest", "pytest-html", "pylama", "coverage", "coverage-badge", "radon", "bandit", "safety",
                      "flake8-annotations"],
       package_data={
           "rest_model_service": [
@@ -35,6 +35,10 @@ setup(name="rest_model_service",
       },
       classifiers=[
           "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.7",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
           "Intended Audience :: Developers",
           "Operating System :: OS Independent"
       ],

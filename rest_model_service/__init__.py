@@ -1,11 +1,8 @@
 """RESTful service for hosting machine learning models."""
 
 from os.path import abspath, dirname, join
-from ml_base.ml_model import MLModel
-from ml_base.decorator import MLModelDecorator
-from ml_base.utilities.model_manager import ModelManager
 
-__all__ = ["MLModel", "MLModelDecorator", "ModelManager"]
+__all__ = ["__version__"]
 
 
 try:
