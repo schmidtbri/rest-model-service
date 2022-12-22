@@ -109,6 +109,7 @@ def set_service_status(future: Future) -> None:
         health_status_manager.set_health_status(HealthStatus.NOT_HEALTHY)
         health_status_manager.set_readiness_status(ReadinessStatus.REFUSING_TRAFFIC)
         health_status_manager.set_startup_status(StartupStatus.STARTED)
+        logger.error("Exception raised in service initialization.", exc_info=future.exception())
     else:
         health_status_manager.set_health_status(HealthStatus.HEALTHY)
         health_status_manager.set_readiness_status(ReadinessStatus.ACCEPTING_TRAFFIC)
