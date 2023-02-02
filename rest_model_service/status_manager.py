@@ -7,6 +7,7 @@ from rest_model_service.schemas import HealthStatus, ReadinessStatus, StartupSta
 
 class StatusManager(object):
     """Health status manager singleton."""
+
     _lock = Lock()
 
     def __new__(cls, *args: Tuple, **kwargs: Dict):  # noqa: D102, ANN101, ANN204

@@ -22,7 +22,7 @@ interface around model prediction logic that allows the rest_model_service packa
 it. Some examples of how to create MLModel classes for your model can be found 
 [here](https://schmidtbri.github.io/ml-base/basic/).
 
-You can then set up a configuration file that points at the model class of the model you want to predict. The 
+You can then set up a configuration file that points at the model class of the model you want to host. The 
 configuration file should look like this:
 
 ```yaml
