@@ -9,7 +9,7 @@ from fastapi.exceptions import RequestValidationError
 from ml_base.utilities import ModelManager
 
 from rest_model_service.status_manager import StatusManager, HealthStatus, StartupStatus, ReadinessStatus
-from rest_model_service.configuration import Configuration
+from rest_model_service.configuration import ServiceConfiguration
 from rest_model_service.routes import PredictionController  # noqa: F401,E402
 from rest_model_service.exception_handlers import validation_exception_handler
 from rest_model_service.schemas import Error
@@ -38,11 +38,11 @@ def load_type(class_path: str) -> Type:
     return _class
 
 
-def create_app(configuration: Configuration, wait_for_model_creation: bool = False) -> FastAPI:
+def create_app(configuration: ServiceConfiguration, wait_for_model_creation: bool = False) -> FastAPI:
     """Create instance of FastAPI app and return it.
 
     Args:
-        configuration: Configuration used to create application
+        configuration: Configuration used to create service.
         wait_for_model_creation: Whether to wait for models to finish instantiating before returning. Defaults to false
             to allow for asynchronous model creation in a separate thread.
 
@@ -50,9 +50,9 @@ def create_app(configuration: Configuration, wait_for_model_creation: bool = Fal
         FastAPI application object.
 
     .. note::
-        This function creates a FastAPI application object using the options in a Configuration object. The application
-        scaffolding is created by this function. The models are added to the application asynchronously by calling the
-        build_models function in a separate thread.
+        This function creates a FastAPI application object using the options in a ServiceConfiguration object. The
+        application scaffolding is created by this function. The models are added to the application asynchronously by
+        calling the build_models function in a separate thread.
 
     """
     logger.info("Creating FastAPI app for: '{}'.".format(configuration.service_title))
@@ -116,7 +116,7 @@ def set_service_status(future: Future) -> None:
         health_status_manager.set_startup_status(StartupStatus.STARTED)
 
 
-def build_models(app: FastAPI, configuration: Configuration) -> None:
+def build_models(app: FastAPI, configuration: ServiceConfiguration) -> None:
     """Instantiate models and decorators, adding endpoints if necessary.
 
     Args:
@@ -139,18 +139,21 @@ def build_models(app: FastAPI, configuration: Configuration) -> None:
     # loading the models into the ModelManager singleton instance
     model_manager = ModelManager()
 
-    for model in configuration.models:
+    for model_configuration in configuration.models:
         # loading the model's class
-        model_class = load_type(model.class_path)
+        model_class = load_type(model_configuration.class_path)
 
         # instantiating the model object from the class
-        model_instance = model_class()
+        if model_configuration.configuration is not None:
+            model_instance = model_class(**model_configuration.configuration)
+        else:
+            model_instance = model_class()
 
         # adding the model instance to the ModelManager
         model_manager.add_model(model_instance)
         logger.info("Loaded {} model.".format(model_instance.qualified_name))
 
-        decorators = model.decorators if model.decorators is not None else []
+        decorators = model_configuration.decorators if model_configuration.decorators is not None else []
         # initializing decorators for the model
         for decorator in decorators:
             # loading the decorator's class
@@ -163,27 +166,27 @@ def build_models(app: FastAPI, configuration: Configuration) -> None:
                 decorator_instance = decorator_class()
 
             # adding the decorator to the model in the ModelManager
-            model_manager.add_decorator(model.qualified_name, decorator_instance)
+            model_manager.add_decorator(model_instance.qualified_name, decorator_instance)
 
             logger.info("Added {} decorator to {} model.".format(decorator_class.__name__,
                                                                  model_instance.qualified_name))
 
         # creating an endpoint for each model, if the configuration allows it
-        if model.create_endpoint:
-            model = model_manager.get_model(model.qualified_name)
+        if model_configuration.create_endpoint:
+            model = model_manager.get_model(model_instance.qualified_name)
 
             controller = PredictionController(model=model)
-            controller.__call__.__annotations__["data"] = model.input_schema
+            controller.__call__.__annotations__["data"] = model_instance.input_schema
 
-            app.add_api_route("/api/models/{}/prediction".format(model.qualified_name),
+            app.add_api_route("/api/models/{}/prediction".format(model_instance.qualified_name),
                               controller,
                               methods=["POST"],
-                              response_model=model.output_schema,
-                              description=model.description,
+                              response_model=model_instance.output_schema,
+                              description=model_instance.description,
                               responses={
                                   400: {"model": Error},
                                   500: {"model": Error}
                               })
-            logger.info("Created endpoint for {} model.".format(model.qualified_name))
+            logger.info("Created endpoint for {} model.".format(model_instance.qualified_name))
         else:
-            logger.info("Skipped creating an endpoint for model: {}".format(model.qualified_name))
+            logger.info("Skipped creating an endpoint for model: {}".format(model_instance.qualified_name))

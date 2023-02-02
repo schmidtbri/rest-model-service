@@ -34,11 +34,10 @@ setup(name="rest_model_service",
             ]
       },
       classifiers=[
-          "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3.7",
           "Programming Language :: Python :: 3.8",
           "Programming Language :: Python :: 3.9",
           "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
           "Intended Audience :: Developers",
           "Operating System :: OS Independent"
       ],
@@ -48,5 +47,5 @@ setup(name="rest_model_service",
           "Tracker": "https://github.com/schmidtbri/rest-model-service/issues"
       },
       keywords=[
-          "machine learning", "REST", "service"
+          "machine learning", "REST", "service", "model deployment"
       ])

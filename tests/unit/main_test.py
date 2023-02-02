@@ -8,7 +8,7 @@ from ml_base.utilities import ModelManager
 os.chdir(Path(__file__).resolve().parent.parent.parent)
 
 from rest_model_service.helpers import create_app
-from rest_model_service.configuration import Configuration
+from rest_model_service.configuration import ServiceConfiguration
 from rest_model_service.configuration import Model, ModelDecorator
 from tests.mocks import IrisModel, PredictionIDDecorator
 
@@ -25,7 +25,7 @@ class MainTests(unittest.TestCase):
 
     def test_service_info_from_configuration(self):
         # arrange, act
-        configuration = Configuration(models=[])
+        configuration = ServiceConfiguration(models=[])
         app = create_app(configuration, wait_for_model_creation=True)
 
         # assert
@@ -34,7 +34,7 @@ class MainTests(unittest.TestCase):
         self.assertTrue(app.description == "")
 
         # arrange, act
-        configuration = Configuration(service_title="asdf", version="qwe", description="asdf", models=[])
+        configuration = ServiceConfiguration(service_title="asdf", version="qwe", description="asdf", models=[])
         app = create_app(configuration, wait_for_model_creation=True)
 
         # assert
@@ -42,21 +42,11 @@ class MainTests(unittest.TestCase):
         self.assertTrue(app.version == "qwe")
         self.assertTrue(app.description == "asdf")
 
-    def test_with_bad_configuration(self):
-        # arrange, act, assert
-        with self.assertRaises(ValueError) as e:
-            configuration = Configuration(models=[Model(qualified_name="asdf",
-                                                        class_path="tests.mocks.IrisModel",
-                                                        create_endpoint=True)])
-
-            app = create_app(configuration, wait_for_model_creation=True)
-
     def test_add_model_from_configuration(self):
         # arrange
-        configuration = Configuration(service_title="REST Model Service",
-                                      models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(service_title="REST Model Service",
+                                             models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -69,15 +59,37 @@ class MainTests(unittest.TestCase):
         self.assertTrue(type(model) is IrisModel)
         self.assertTrue(str(model) == "IrisModel")
 
+    def test_add_model_from_configuration_with_keyword_arguments(self):
+        # arrange
+        configuration = ServiceConfiguration(service_title="REST Model Service",
+                                             models=[Model(class_path="tests.mocks.IrisModelWithConfiguration",
+                                                           create_endpoint=True,
+                                                           configuration={
+                                                               "option1": 123,
+                                                               "option2": "asdf",
+                                                               "option3": True
+                                                           })])
+
+        app = create_app(configuration, wait_for_model_creation=True)
+
+        model_manager = ModelManager()
+
+        # act
+        model = model_manager.get_model("iris_model_with_configuration")
+
+        # assert
+        self.assertTrue(model.config["option1"] == 123)
+        self.assertTrue(model.config["option2"] == "asdf")
+        self.assertTrue(model.config["option3"] is True)
+
     def test_add_decorator_from_configuration_file_without_configuration(self):
         # arrange
-        configuration = Configuration(service_title="REST Model Service",
-                                      models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True,
-                                                    decorators=[ModelDecorator(
-                                                        class_path="tests.mocks.PredictionIDDecorator"
-                                                    )])])
+        configuration = ServiceConfiguration(service_title="REST Model Service",
+                                             models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True,
+                                                           decorators=[ModelDecorator(
+                                                               class_path="tests.mocks.PredictionIDDecorator"
+                                                           )])])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -92,16 +104,15 @@ class MainTests(unittest.TestCase):
 
     def test_add_decorator_from_configuration_file_with_kwargs(self):
         # arrange
-        configuration = Configuration(service_title="REST Model Service",
-                                      models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True,
-                                                    decorators=[
-                                                        ModelDecorator(
-                                                            class_path="tests.mocks.PredictionIDDecorator",
-                                                            configuration={"asdf": "asdf", "qwer": 1}
-                                                        )
-                                                    ])])
+        configuration = ServiceConfiguration(service_title="REST Model Service",
+                                             models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True,
+                                                           decorators=[
+                                                               ModelDecorator(
+                                                                   class_path="tests.mocks.PredictionIDDecorator",
+                                                                   configuration={"asdf": "asdf", "qwer": 1}
+                                                               )
+                                                           ])])
 
         app = create_app(configuration, wait_for_model_creation=True)
 

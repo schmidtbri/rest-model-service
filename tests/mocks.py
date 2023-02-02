@@ -75,6 +75,22 @@ class IrisModelWithException(MLModel):
         return IrisModelOutput(species="Iris setosa")
 
 
+class IrisModelWithConfiguration(MLModel):
+    # accessing the package metadata
+    display_name = "Iris Model With Configuration"
+    qualified_name = "iris_model_with_configuration"
+    description = "Model for predicting the species of a flower based on its measurements, receives configuration in init."
+    version = "1.0.0"
+    input_schema = IrisModelInput
+    output_schema = IrisModelOutput
+
+    def __init__(self, **kwargs):
+        self.config = kwargs
+
+    def predict(self, data):
+        return IrisModelOutput(species="Iris setosa")
+
+
 # creating a mockup class to test with
 class SomeClass(object):
     pass

@@ -1,10 +1,10 @@
 ![Code Quality Status](https://github.com/schmidtbri/rest-model-service/actions/workflows/test.yml/badge.svg)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-green)](https://opensource.org/licenses/BSD-3-Clause)
-[![PyPi](https://img.shields.io/badge/pypi-v0.4.0-green)](https://pypi.org/project/rest-model-service/)
+[![PyPi](https://img.shields.io/badge/pypi-v0.5.0-green)](https://pypi.org/project/rest-model-service/)
 
-# rest-model-service
+# REST Model Service
 
-**rest-model-service** is a package for building RESTful services for hosting machine learning models.
+**rest-model-service** is a package for building RESTful services for hosting machine learning models. 
 
 ## Installation
 
@@ -22,26 +22,43 @@ interface around model prediction logic that allows the rest_model_service packa
 it. Some examples of how to create MLModel classes for your model can be found 
 [here](https://schmidtbri.github.io/ml-base/basic/).
 
-You can then set up a configuration file that points at the model class. The configuration file should look 
-like this:
+You can then set up a configuration file that points at the model class of the model you want to predict. The 
+configuration file should look like this:
 
 ```yaml
 service_title: "REST Model Service"
 models:
-  - qualified_name: iris_model
-    class_path: tests.mocks.IrisModel
+  - class_path: tests.mocks.IrisModel
     create_endpoint: true
 ```
 
-The qualified name of your model and the class path to your model class should be placed in the correct place in the 
-configuration file. The "create_endpoint" option is there for cases when you might want to load a model but not create
+The "class_path" should contain the full path to the class, including the package names, module name, and class name 
+separated by periods. The "create_endpoint" option is there for cases when you might want to load a model but not create
 an endpoint for it, if it is set to "false" the model will be loaded and available for use within the service but
-will not have an endpoint defined for it.
+will not have an endpoint defined for it. A reference to the model object will be available from the [ModelManager 
+singleton](https://schmidtbri.github.io/ml-base/basic/#using-the-modelmanager-class).
 
 The config file should be YAML, be named "rest_config.yaml", and be in the current working directory. However, 
-we can point at configuration files that are in different locations if needed.
+we can point at configuration files that have different names and are in different locations if needed.
 
 The service can host many models, all that is needed is to add entries to the "models" array.
+
+Configuration options can also be passed to the models hosted by the service. To do this, add a configuration key to 
+the model entry in the "models" array:
+
+```yaml
+service_title: "REST Model Service"
+models:
+  - class_path: tests.mocks.IrisModel
+    create_endpoint: true
+    configuration:
+      parameter1: true
+      parameter2: string_value
+      parameter3: 123
+```
+
+The key-value pairs are passed directly into the model class' `__init__()` method at instantiation time as keyword
+arguments. The model can then use the parameters to configure itself.
 
 ### Adding Service Information
 
@@ -52,8 +69,7 @@ service_title: "REST Model Service"
 description: "Service description"
 version: "1.1.0"
 models:
-  - qualified_name: iris_model
-    class_path: tests.mocks.IrisModel
+  - class_path: tests.mocks.IrisModel
     create_endpoint: true
 ```
 
@@ -70,8 +86,7 @@ key to the model's configuration:
 ```yaml
 service_title: REST Model Service With Decorators
 models:
-  - qualified_name: iris_model
-    class_path: tests.mocks.IrisModel
+  - class_path: tests.mocks.IrisModel
     create_endpoint: true
     decorators:
       - class_path: tests.mocks.PredictionIDDecorator
@@ -84,8 +99,7 @@ decorator's entry like this:
 ```yaml
 service_title: REST Model Service With Decorators
 models:
-  - qualified_name: iris_model
-    class_path: tests.mocks.IrisModel
+  - class_path: tests.mocks.IrisModel
     create_endpoint: true
     decorators:
       - class_path: tests.mocks.PredictionIDDecorator
@@ -96,9 +110,9 @@ models:
 
 The configuration dictionary will be passed to the decorator class as keyword arguments.
 
-Many decorators can be added to a single model, each decorator will decorate the decorator that was previously attached 
-to the model. This will create a "stack" of decorators that will handle the prediction request before the model's 
-prediction is created.
+Many decorators can be added to a single model, in which case each decorator will decorate the decorator that was 
+previously attached to the model. This will create a "stack" of decorators that will each handle the prediction request 
+before the model's prediction is created.
 
 ### Adding Logging Configuration
 
@@ -107,8 +121,7 @@ The service also optionally accepts logging configuration through the YAML confi
 ```yaml
 service_title: REST Model Service With Logging
 models:
-  - qualified_name: iris_model
-    class_path: tests.mocks.IrisModel
+  - class_path: tests.mocks.IrisModel
     create_endpoint: true
 logging:
     version: 1
@@ -152,7 +165,7 @@ You can provide a path to the configuration file like this:
 generate_openapi --configuration_file=examples/rest_config.yaml
 ```
 
-You can also provide the desired path for the OpenAPI document like this:
+You can also provide the desired path for the OpenAPI document that will be created like this:
 
 ```bash
 generate_openapi --output_file=example.yaml
@@ -166,19 +179,6 @@ generate_openapi --configuration_file=examples/rest_config.yaml --output_file=ex
 
 An example rest_config.yaml file is provided in the examples of the project. It points at a MLModel class in the tests
 package.
-
-### Common Errors
-
-If you get an error that says something about not being able to find a module, you might need to update your 
-PYTHONPATH environment variable:
-
-```bash
-export PYTHONPATH=./
-```
-
-The service relies on being able to find the model classes and the decorator classes in the python environment to load 
-them and instantiate them. If your Python interpreter is not able to find the classes, then the service won't be able
-to instantiate the model classes or create endpoints for the models or an OpenAPI document for them. 
 
 ### Using Status Check Endpoints
 
@@ -207,6 +207,19 @@ directory you can point the service to the right path like this:
 export REST_CONFIG='examples/rest_config.yaml'
 uvicorn rest_model_service.main:app --reload
 ```
+
+### Common Errors
+
+If you get an error that says something about not being able to find a module or a class, you might need to update your 
+PYTHONPATH environment variable:
+
+```bash
+export PYTHONPATH=./
+```
+
+The service relies on being able to find the model classes and the decorator classes in the python environment to load 
+them and instantiate them. If your Python interpreter is not able to find the classes, then the service won't be able
+to instantiate the model classes or create endpoints for the models or an OpenAPI document for them. 
 
 ## Development
 
