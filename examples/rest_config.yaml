@@ -1,5 +1,4 @@
 service_title: REST Model Service
 models:
-  - qualified_name: iris_model
-    class_path: tests.mocks.IrisModel
+  - class_path: tests.mocks.IrisModel
     create_endpoint: true

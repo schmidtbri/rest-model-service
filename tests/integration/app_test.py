@@ -7,15 +7,15 @@ from fastapi.testclient import TestClient
 os.chdir(Path(__file__).resolve().parent.parent.parent)
 
 from rest_model_service.helpers import create_app
-from rest_model_service.configuration import Model, Configuration
+from rest_model_service.configuration import Model, ServiceConfiguration
 
 
 class AppTests(unittest.TestCase):
 
     def test_service_endpoints_with_no_models(self):
         # arrange
-        app = create_app(Configuration(service_title="REST Model Service",
-                                       models=[]))
+        app = create_app(ServiceConfiguration(service_title="REST Model Service",
+                                              models=[]))
 
         # act
         with TestClient(app) as client:
@@ -32,11 +32,10 @@ class AppTests(unittest.TestCase):
 
     def test_health_endpoints_with_slow_loading_model(self):
         # arrange
-        configuration = Configuration(service_title="REST Model Service",
-                                      models=[
-                                          Model(qualified_name="slow_iris_model",
-                                                class_path="tests.mocks.SlowIrisModel",
-                                                create_endpoint=True)])
+        configuration = ServiceConfiguration(service_title="REST Model Service",
+                                             models=[
+                                                 Model(class_path="tests.mocks.SlowIrisModel",
+                                                       create_endpoint=True)])
 
         app = create_app(configuration)
 
@@ -68,11 +67,10 @@ class AppTests(unittest.TestCase):
 
     def test_health_endpoints_with_model_that_throws_exception_in_init(self):
         # arrange
-        configuration = Configuration(service_title="REST Model Service",
-                                      models=[
-                                          Model(qualified_name="iris_model_with_exception",
-                                                class_path="tests.mocks.IrisModelWithException",
-                                                create_endpoint=True)])
+        configuration = ServiceConfiguration(service_title="REST Model Service",
+                                             models=[
+                                                 Model(class_path="tests.mocks.IrisModelWithException",
+                                                       create_endpoint=True)])
         app = create_app(configuration)
 
         with TestClient(app) as client:

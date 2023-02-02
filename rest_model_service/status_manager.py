@@ -1,16 +1,21 @@
 """Health status manager that holds health status information for the application."""
 from typing import Tuple, Dict
+from threading import Lock
+
 from rest_model_service.schemas import HealthStatus, ReadinessStatus, StartupStatus
 
 
 class StatusManager(object):
     """Health status manager singleton."""
 
+    _lock = Lock()
+
     def __new__(cls, *args: Tuple, **kwargs: Dict):  # noqa: D102, ANN101, ANN204
         """Create new StatusManager instance, after instance is first created it will always be returned."""
         if not hasattr(cls, "_instance"):
-            cls._instance = super(StatusManager, cls).__new__(cls, *args, **kwargs)
-            cls._instance._is_initialized = False
+            with cls._lock:
+                cls._instance = super(StatusManager, cls).__new__(cls, *args, **kwargs)
+                cls._instance._is_initialized = False
         return cls._instance
 
     def __init__(self) -> None:  # noqa: ANN101

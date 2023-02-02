@@ -11,7 +11,7 @@ from ml_base.ml_model import MLModelSchemaValidationException
 os.chdir(Path(__file__).resolve().parent.parent.parent)
 
 from rest_model_service.helpers import create_app
-from rest_model_service.configuration import Configuration, Model
+from rest_model_service.configuration import ServiceConfiguration, Model
 
 
 class RoutesTests(unittest.TestCase):
@@ -22,9 +22,8 @@ class RoutesTests(unittest.TestCase):
 
     def test_root(self):
         # arrange
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -37,9 +36,8 @@ class RoutesTests(unittest.TestCase):
 
     def test_get_models(self):
         # arrange
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -63,9 +61,8 @@ class RoutesTests(unittest.TestCase):
 
     def test_get_model_metadata(self):
         # arrange
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -89,9 +86,8 @@ class RoutesTests(unittest.TestCase):
         model_manager = ModelManager()
         model_manager.get_models = Mock(side_effect=Exception("Exception!"))
 
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -111,9 +107,8 @@ class RoutesTests(unittest.TestCase):
         model_manager = ModelManager()
         model_manager.get_model_metadata = Mock(side_effect=Exception("Exception!"))
 
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -130,9 +125,8 @@ class RoutesTests(unittest.TestCase):
 
     def test_prediction(self):
         # arrange
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -153,9 +147,8 @@ class RoutesTests(unittest.TestCase):
 
     def test_prediction_with_validation_exception_raised_in_model_predict_method(self):
         # arrange
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -181,9 +174,8 @@ class RoutesTests(unittest.TestCase):
 
     def test_prediction_with_exception_raised_in_model_predict_method(self):
         # arrange
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -209,9 +201,8 @@ class RoutesTests(unittest.TestCase):
 
     def test_prediction_with_bad_data(self):
         # arrange
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=True)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=True)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 
@@ -229,9 +220,8 @@ class RoutesTests(unittest.TestCase):
 
     def test_prediction_with_no_endpoint(self):
         # arrange
-        configuration = Configuration(models=[Model(qualified_name="iris_model",
-                                                    class_path="tests.mocks.IrisModel",
-                                                    create_endpoint=False)])
+        configuration = ServiceConfiguration(models=[Model(class_path="tests.mocks.IrisModel",
+                                                           create_endpoint=False)])
 
         app = create_app(configuration, wait_for_model_creation=True)
 

@@ -4,7 +4,7 @@ from os import path
 import logging.config
 import yaml
 
-from rest_model_service.configuration import Configuration
+from rest_model_service.configuration import ServiceConfiguration
 from rest_model_service.helpers import create_app
 
 
@@ -22,8 +22,8 @@ else:
 if path.exists(file_path) and path.isfile(file_path):
     with open(file_path) as file:
         configuration_dict = yaml.full_load(file)
-    configuration = Configuration(**configuration_dict)
+    configuration = ServiceConfiguration(**configuration_dict)
     app = create_app(configuration, wait_for_model_creation=False)
 else:
-    # if there is no configuration file, or it is not found, then raise a warning
+    # if there is no configuration file, or it is not found, then raise an exception
     raise ValueError("Could not find configuration file '{}', service has no models loaded.".format(file_path))
