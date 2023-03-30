@@ -39,6 +39,7 @@ test-dependencies: ## Install dependencies from test_requirements.txt
 .PHONY: test-dependencies
 
 update-dependencies:  ## Update dependency versions
+	pip install pip-tools
 	pip-compile requirements.in > requirements.txt
 	pip-compile test_requirements.in > test_requirements.txt
 .PHONY: update-dependencies
