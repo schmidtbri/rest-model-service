@@ -55,6 +55,10 @@ def create_app(configuration: ServiceConfiguration, wait_for_model_creation: boo
         calling the build_models function in a separate thread.
 
     """
+    # setting up the logging configuration
+    if configuration.logging is not None:
+        logging.config.dictConfig(configuration.logging)
+
     logger.info("Creating FastAPI app for: '{}'.".format(configuration.service_title))
 
     app: FastAPI = FastAPI(title=configuration.service_title,
@@ -132,10 +136,6 @@ def build_models(app: FastAPI, configuration: ServiceConfiguration) -> None:
         decorators have finished being instantiated.
 
     """
-    # setting up the logging configuration
-    if configuration.logging is not None:
-        logging.config.dictConfig(configuration.logging)
-
     # loading the models into the ModelManager singleton instance
     model_manager = ModelManager()
 
@@ -171,22 +171,23 @@ def build_models(app: FastAPI, configuration: ServiceConfiguration) -> None:
             logger.info("Added {} decorator to {} model.".format(decorator_class.__name__,
                                                                  model_instance.qualified_name))
 
+        # retrieving the model instance from the ModelManager again to make sure it also has the decorators attached
+        model = model_manager.get_model(model_instance.qualified_name)
+
         # creating an endpoint for each model, if the configuration allows it
         if model_configuration.create_endpoint:
-            model = model_manager.get_model(model_instance.qualified_name)
-
             controller = PredictionController(model=model)
-            controller.__call__.__annotations__["data"] = model_instance.input_schema
+            controller.__call__.__annotations__["data"] = model.input_schema
 
-            app.add_api_route("/api/models/{}/prediction".format(model_instance.qualified_name),
+            app.add_api_route("/api/models/{}/prediction".format(model.qualified_name),
                               controller,
                               methods=["POST"],
-                              response_model=model_instance.output_schema,
-                              description=model_instance.description,
+                              response_model=model.output_schema,
+                              description=model.description,
                               responses={
                                   400: {"model": Error},
                                   500: {"model": Error}
                               })
-            logger.info("Created endpoint for {} model.".format(model_instance.qualified_name))
+            logger.info("Created endpoint for {} model.".format(model.qualified_name))
         else:
-            logger.info("Skipped creating an endpoint for model: {}".format(model_instance.qualified_name))
+            logger.info("Skipped creating an endpoint for model: {}".format(model.qualified_name))

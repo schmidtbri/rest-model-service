@@ -13,14 +13,14 @@ attrs==22.2.0
     # via
     #   flake8-annotations
     #   pytest
-bandit==1.7.4
+bandit==1.7.5
     # via -r test_requirements.in
 certifi==2022.12.7
     # via
     #   httpcore
     #   httpx
     #   requests
-charset-normalizer==3.0.1
+charset-normalizer==3.1.0
     # via requests
 click==8.1.3
     # via
@@ -28,7 +28,7 @@ click==8.1.3
     #   uvicorn
 colorama==0.4.6
     # via radon
-coverage==7.1.0
+coverage==7.2.2
     # via
     #   -r test_requirements.in
     #   coverage-badge
@@ -40,19 +40,17 @@ dparse==0.6.2
     # via safety
 email-validator==1.3.1
     # via fastapi
-exceptiongroup==1.1.0
+exceptiongroup==1.1.1
     # via pytest
-fastapi[all]==0.89.1
+fastapi[all]==0.95.0
     # via -r test_requirements.in
 flake8==6.0.0
     # via flake8-annotations
 flake8-annotations==3.0.0
     # via -r test_requirements.in
-future==0.18.3
-    # via radon
 gitdb==4.0.10
     # via gitpython
-gitpython==3.1.30
+gitpython==3.1.31
     # via bandit
 h11==0.14.0
     # via
@@ -76,15 +74,19 @@ itsdangerous==2.1.2
     # via fastapi
 jinja2==3.1.2
     # via fastapi
-mando==0.6.4
+mando==0.7.1
     # via radon
+markdown-it-py==2.2.0
+    # via rich
 markupsafe==2.1.2
     # via jinja2
 mccabe==0.7.0
     # via
     #   flake8
     #   pylama
-orjson==3.8.5
+mdurl==0.1.2
+    # via markdown-it-py
+orjson==3.8.9
     # via fastapi
 packaging==21.3
     # via
@@ -101,7 +103,7 @@ pycodestyle==2.10.0
     # via
     #   flake8
     #   pylama
-pydantic==1.10.4
+pydantic==1.10.7
     # via fastapi
 pydocstyle==6.3.0
     # via pylama
@@ -109,11 +111,13 @@ pyflakes==3.0.1
     # via
     #   flake8
     #   pylama
+pygments==2.14.0
+    # via rich
 pylama==8.4.1
     # via -r test_requirements.in
 pyparsing==3.0.9
     # via packaging
-pytest==7.2.1
+pytest==7.2.2
     # via
     #   -r test_requirements.in
     #   pytest-html
@@ -122,21 +126,23 @@ pytest-html==3.2.0
     # via -r test_requirements.in
 pytest-metadata==2.0.4
     # via pytest-html
-python-dotenv==0.21.1
+python-dotenv==1.0.0
     # via uvicorn
-python-multipart==0.0.5
+python-multipart==0.0.6
     # via fastapi
 pyyaml==6.0
     # via
     #   bandit
     #   fastapi
     #   uvicorn
-radon==5.1.0
+radon==6.0.1
     # via -r test_requirements.in
 requests==2.28.2
     # via safety
 rfc3986[idna2008]==1.5.0
     # via httpx
+rich==13.3.3
+    # via bandit
 ruamel-yaml==0.17.21
     # via safety
 ruamel-yaml-clib==0.2.7
@@ -144,9 +150,7 @@ ruamel-yaml-clib==0.2.7
 safety==2.3.5
     # via -r test_requirements.in
 six==1.16.0
-    # via
-    #   mando
-    #   python-multipart
+    # via mando
 smmap==5.0.0
     # via gitdb
 sniffio==1.3.0
@@ -156,27 +160,27 @@ sniffio==1.3.0
     #   httpx
 snowballstemmer==2.2.0
     # via pydocstyle
-starlette==0.22.0
+starlette==0.26.1
     # via fastapi
-stevedore==4.1.1
+stevedore==5.0.0
     # via bandit
 toml==0.10.2
     # via dparse
 tomli==2.0.1
     # via pytest
-typing-extensions==4.4.0
+typing-extensions==4.5.0
     # via
     #   pydantic
     #   starlette
 ujson==5.7.0
     # via fastapi
-urllib3==1.26.14
+urllib3==1.26.15
     # via requests
-uvicorn[standard]==0.20.0
+uvicorn[standard]==0.21.1
     # via fastapi
 uvloop==0.17.0
     # via uvicorn
-watchfiles==0.18.1
+watchfiles==0.19.0
     # via uvicorn
 websockets==10.4
     # via uvicorn
