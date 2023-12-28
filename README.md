@@ -1,10 +1,20 @@
 ![Code Quality Status](https://github.com/schmidtbri/rest-model-service/actions/workflows/test.yml/badge.svg)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-green)](https://opensource.org/licenses/BSD-3-Clause)
-[![PyPi](https://img.shields.io/badge/pypi-v0.5.0-green)](https://pypi.org/project/rest-model-service/)
+[![PyPi](https://img.shields.io/badge/pypi-v0.6.0-green)](https://pypi.org/project/rest-model-service/)
 
 # REST Model Service
 
 **rest-model-service** is a package for building RESTful services for hosting machine learning models. 
+
+This package helps you to quickly build RESTful services for your ML model by handling many low level details, like:
+
+- Documentation, using pydantic and OpenAPI
+- Logging configuration
+- Status Check Endpoints
+- Metrics
+
+This package also allows you to extend the functionality of your deployed models by following the 
+[Decorator Pattern](https://en.wikipedia.org/wiki/Decorator_pattern).
 
 ## Installation
 
@@ -17,10 +27,9 @@ pip install rest_model_service
 ## Usage 
 
 To use the service you must first have a working model class that uses the MLModel base class from the 
-[ml_base package](https://schmidtbri.github.io/ml-base/). The MLModel base class is designed to provide a consistent 
-interface around model prediction logic that allows the rest_model_service package to deploy any model that implements 
-it. Some examples of how to create MLModel classes for your model can be found 
-[here](https://schmidtbri.github.io/ml-base/basic/).
+[ml_base package](https://schmidtbri.github.io/ml-base/). The MLModel base class is designed to provide a consistent interface around model prediction 
+logic that allows the rest_model_service package to deploy any model that implements it. Some examples of how to create 
+MLModel classes for your model can be found [here](https://schmidtbri.github.io/ml-base/basic/).
 
 You can then set up a configuration file that points at the model class of the model you want to host. The 
 configuration file should look like this:
@@ -114,7 +123,7 @@ Many decorators can be added to a single model, in which case each decorator wil
 previously attached to the model. This will create a "stack" of decorators that will each handle the prediction request 
 before the model's prediction is created.
 
-### Adding Logging Configuration
+### Adding Logging
 
 The service also optionally accepts logging configuration through the YAML configuration file:
 
@@ -146,6 +155,70 @@ logging:
 
 The YAML needs to be formatted so that it deserializes to a dictionary that matches the logging package's [configuration
 dictionary schema](https://docs.python.org/3/library/logging.config.html#logging-config-dictschema).
+
+### Adding Metrics
+
+This package allows you to create an endpoint that exposes metrics to a [Prometheus server](https://prometheus.io/). 
+The metrics endpoint is disabled by default and must be enabled in the configuration file.
+
+Using this aspect of the service requires installing the "metrics" optional dependencies:
+
+```bash
+pip install rest_model_service[metrics]
+```
+
+To enable the metrics collection, simply set the "enabled" attribute in the "metrics" attribute to "true" in the YAML 
+configuration file:
+
+```yaml
+service_title: "REST Model Service"
+description: "Service description"
+version: "1.1.0"
+metrics:
+  enabled: true
+models:
+  - class_path: tests.mocks.IrisModel
+    create_endpoint: true
+```
+
+The default metrics are:
+
+- http_requests_total: A counter that counts the number of requests to the service.
+- http_request_size_bytes: A summary that counts the size of the requests to the service.
+- http_response_size_bytes: A summary that counts the size of the responses from the service.
+- http_request_duration_seconds: A histogram that counts the duration of the requests to the service. Only a few 
+  buckets to keep cardinality low.
+- http_request_duration_highr_seconds: A histogram that counts the duration of the requests to the service. Large 
+  number of buckets (>20).
+
+The configuration allows more complex options to be passed to the Prometheus client library. To do this, add
+keys to the metrics configuration:
+
+```yaml
+service_title: "REST Model Service"
+description: "Service description"
+version: "1.1.0"
+metrics:
+  enabled: true
+  should_group_status_codes: true
+  should_ignore_untemplated: false
+  should_group_untemplated: true
+  should_round_latency_decimals: false
+  should_respect_env_var: false
+  should_instrument_requests_inprogress: false
+  excluded_handlers: []
+  body_handlers: []
+  round_latency_decimals: 4
+  env_var_name: "ENABLE_METRICS"
+  inprogress_name: "http_requests_inprogress"
+  inprogress_labels: false
+models:
+  - class_path: tests.mocks.IrisModel
+    create_endpoint: true
+```
+
+The options are passed directly into the Prometheus instrumentor 
+[library](https://pypi.org/project/prometheus-fastapi-instrumentator/), the options are explained in that library's documentation.
 
 ### Creating an OpenAPI Contract
 

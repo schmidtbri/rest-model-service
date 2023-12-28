@@ -15,6 +15,7 @@ from rest_model_service.exception_handlers import validation_exception_handler
 from rest_model_service.schemas import Error
 from rest_model_service.routes import router
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,7 +50,7 @@ def create_app(configuration: ServiceConfiguration, wait_for_model_creation: boo
     Returns:
         FastAPI application object.
 
-    .. note::
+    Note:
         This function creates a FastAPI application object using the options in a ServiceConfiguration object. The
         application scaffolding is created by this function. The models are added to the application asynchronously by
         calling the build_models function in a separate thread.
@@ -90,6 +91,7 @@ def create_app(configuration: ServiceConfiguration, wait_for_model_creation: boo
     # this is useful for creating the app object for tests and for getting the full OpenAPI spec from the app
     if wait_for_model_creation:
         _ = future.result()
+
     return app
 
 
@@ -102,7 +104,7 @@ def set_service_status(future: Future) -> None:
     Returns:
         None
 
-    .. note::
+    Note:
         If the models or decorators created in the build_models function raise an exception, the status of the service
         will be "NOT_HEALTHY", "REFUSING_TRAFFIC", and "STARTED".
 
@@ -130,7 +132,7 @@ def build_models(app: FastAPI, configuration: ServiceConfiguration) -> None:
     Returns:
         Optional exception object, if an exception is raised it is returned to the caller.
 
-    .. note::
+    Note:
         This function is designed to execute as a separate thread from the main server thread. This allows the FastAPI
         server to start up and return status information through the health endpoints before all the models and
         decorators have finished being instantiated.

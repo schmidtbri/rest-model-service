@@ -44,9 +44,9 @@ async def health_check() -> JSONResponse:   # noqa: ANN201
     health_status_response = HealthStatusResponse(health_status=health_status)
 
     if health_status == HealthStatus.HEALTHY:
-        return JSONResponse(health_status_response.dict(), 200)
+        return JSONResponse(health_status_response.model_dump(), status_code=200)
     else:
-        return JSONResponse(health_status_response.dict(), 503)
+        return JSONResponse(health_status_response.model_dump(), status_code=503)
 
 
 @router.get("/api/health/ready",
@@ -68,9 +68,9 @@ async def readiness_check() -> JSONResponse:   # noqa: ANN201
     readiness_status_response = ReadinessStatusResponse(readiness_status=readiness_status)
 
     if readiness_status == ReadinessStatus.ACCEPTING_TRAFFIC:
-        return JSONResponse(readiness_status_response.dict(), 200)
+        return JSONResponse(readiness_status_response.model_dump(), status_code=200)
     else:
-        return JSONResponse(readiness_status_response.dict(), 503)
+        return JSONResponse(readiness_status_response.model_dump(), status_code=503)
 
 
 @router.get("/api/health/startup",
@@ -91,9 +91,9 @@ async def startup_check() -> JSONResponse:   # noqa: ANN201
     startup_status_response = StartupStatusResponse(startup_status=startup_status)
 
     if startup_status == StartupStatus.STARTED:
-        return JSONResponse(startup_status_response.dict(), 200)
+        return JSONResponse(startup_status_response.model_dump(), status_code=200)
     else:
-        return JSONResponse(startup_status_response.dict(), 503)
+        return JSONResponse(startup_status_response.model_dump(), status_code=503)
 
 
 @router.get("/api/models",
@@ -112,10 +112,10 @@ async def get_models() -> JSONResponse:   # noqa: ANN201
     try:
         model_manager = ModelManager()
         model_details_collection = model_manager.get_models()
-        model_details_collection = ModelDetailsCollection(**{"models": model_details_collection}).dict()
+        model_details_collection = ModelDetailsCollection(**{"models": model_details_collection}).model_dump()
         return JSONResponse(status_code=200, content=model_details_collection)
     except Exception as e:
-        error = Error(type="ServiceError", messages=[str(e)]).dict()
+        error = Error(type="ServiceError", messages=[str(e)]).model_dump()
         return JSONResponse(status_code=500, content=error)
 
 
@@ -135,17 +135,17 @@ async def get_model_metadata(model_qualified_name: str) -> JSONResponse:   # noq
     try:
         model_manager = ModelManager()
         model_metadata = model_manager.get_model_metadata(qualified_name=model_qualified_name)
-        model_metadata = ModelMetadata(**model_metadata).dict()
+        model_metadata = ModelMetadata(**model_metadata).model_dump()
         return JSONResponse(status_code=200, content=model_metadata)
     except Exception as e:
-        error = Error(type="ServiceError", messages=[str(e)]).dict()
+        error = Error(type="ServiceError", messages=[str(e)]).model_dump()
         return JSONResponse(status_code=500, content=error)
 
 
 class PredictionController(object):
     """Callable class that hosts an instance of a model.
 
-    .. note::
+    Note:
        This class is designed to be used as a route in the FastAPI application.
 
     """
@@ -157,16 +157,16 @@ class PredictionController(object):
     def __call__(self, data) -> JSONResponse:  # noqa: ANN001,ANN204,ANN101
         """Make a prediction with a model."""
         try:
-            prediction = self._model.predict(data).dict()
+            prediction = self._model.predict(data).model_dump()
             logger.debug("Made a prediction with model '{}'.".format(self._model.qualified_name))
             return JSONResponse(status_code=200, content=prediction)
         except MLModelSchemaValidationException as e:
             logger.exception("Error when making a prediction  prediction with model '{}'.".
                              format(self._model.qualified_name), exc_info=e)
-            error = Error(type="SchemaValidationError", messages=[str(e)]).dict()
+            error = Error(type="SchemaValidationError", messages=[str(e)]).model_dump()
             return JSONResponse(status_code=400, content=error)
         except Exception as e:
             logger.exception("Error when making a prediction  prediction with model '{}'.".
                              format(self._model.qualified_name), exc_info=e)
-            error = Error(type="ServiceError", messages=[str(e)]).dict()
+            error = Error(type="ServiceError", messages=[str(e)]).model_dump()
             return JSONResponse(status_code=500, content=error)
