@@ -130,5 +130,5 @@ class PredictionIDDecorator(MLModelDecorator):
             prediction_id = str(uuid4())
 
         prediction = self._model.predict(data=data)
-        wrapped_prediction = self.output_schema(prediction_id=prediction_id, **prediction.dict())
+        wrapped_prediction = self.output_schema(prediction_id=prediction_id, **prediction.model_dump())
         return wrapped_prediction

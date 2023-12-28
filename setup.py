@@ -28,6 +28,9 @@ setup(name="rest_model_service",
       install_requires=["ml-base>=0.2.0", "fastapi", "uvicorn", "pyyaml"],
       tests_require=["pytest", "pytest-html", "pylama", "coverage", "coverage-badge", "radon", "bandit", "safety",
                      "flake8-annotations"],
+      extras_require={
+          "metrics":  ["prometheus-fastapi-instrumentator"]
+      },
       package_data={
           "rest_model_service": [
                   "version.txt"

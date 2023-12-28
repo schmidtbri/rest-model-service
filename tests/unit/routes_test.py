@@ -73,13 +73,43 @@ class RoutesTests(unittest.TestCase):
             # assert
             self.assertTrue(response.status_code == 200)
             self.assertTrue(response.json() == {
-                'display_name': 'Iris Model',
-                'qualified_name': 'iris_model',
-                'description': 'Model for predicting the species of a flower based on its measurements.',
-                'version': '1.0.0',
-                'input_schema': {'title': 'IrisModelInput', 'type': 'object', 'properties': {'sepal_length': {'title': 'Sepal Length', 'description': 'Length of the sepal of the flower.', 'exclusiveMinimum': 5.0, 'exclusiveMaximum': 8.0, 'type': 'number'}, 'sepal_width': {'title': 'Sepal Width', 'description': 'Width of the sepal of the flower.', 'exclusiveMinimum': 2.0, 'exclusiveMaximum': 6.0, 'type': 'number'}, 'petal_length': {'title': 'Petal Length', 'description': 'Length of the petal of the flower.', 'exclusiveMinimum': 1.0, 'exclusiveMaximum': 6.8, 'type': 'number'}, 'petal_width': {'title': 'Petal Width', 'description': 'Width of the petal of the flower.', 'exclusiveMinimum': 0.0, 'exclusiveMaximum': 3.0, 'type': 'number'}}, 'required': ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']},
-                'output_schema': {'title': 'IrisModelOutput', 'type': 'object', 'properties': {'species': {'description': 'Predicted species of the flower.', 'allOf': [{'$ref': '#/definitions/Species'}]}}, 'required': ['species'], 'definitions': {'Species': {'title': 'Species', 'description': 'An enumeration.', 'enum': ['Iris setosa', 'Iris versicolor', 'Iris virginica'], 'type': 'string'}}}
-            })
+                "display_name":"Iris Model",
+                "qualified_name":"iris_model",
+                "description":"Model for predicting the species of a flower based on its measurements.",
+                "version":"1.0.0",
+                "input_schema":{
+                    "properties":{
+                        "sepal_length":{
+                            "description":"Length of the sepal of the flower.",
+                            "exclusiveMaximum":8.0,
+                            "exclusiveMinimum":5.0,
+                            "title":"Sepal Length",
+                            "type":"number"
+                        },
+                        "sepal_width":{
+                            "description":"Width of the sepal of the flower.",
+                            "exclusiveMaximum":6.0,
+                            "exclusiveMinimum":2.0,
+                            "title":"Sepal Width",
+                            "type":"number"
+                        },
+                        "petal_length":{
+                            "description":"Length of the petal of the flower.",
+                            "exclusiveMaximum":6.8,
+                            "exclusiveMinimum":1.0,
+                            "title":"Petal Length",
+                            "type":"number"
+                        },
+                        "petal_width":{
+                            "description":"Width of the petal of the flower.",
+                            "exclusiveMaximum":3.0,
+                            "exclusiveMinimum":0.0,
+                            "title":"Petal Width",
+                            "type":"number"
+                        }
+                    },
+                    "required":["sepal_length","sepal_width","petal_length","petal_width"],
+                    "title":"IrisModelInput","type":"object"},"output_schema":{"$defs":{"Species":{"enum":["Iris setosa","Iris versicolor","Iris virginica"],"title":"Species","type":"string"}},"properties":{"species":{"allOf":[{"$ref":"#/$defs/Species"}],"description":"Predicted species of the flower."}},"required":["species"],"title":"IrisModelOutput","type":"object"}})
 
     def test_get_models_with_exception(self):
         # arrange

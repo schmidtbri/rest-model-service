@@ -1,0 +1,20 @@
+service_title: "REST Model Service"
+description: "Service description"
+version: "1.1.0"
+metrics:
+  enabled: true
+  should_group_status_codes: true
+  should_ignore_untemplated: false
+  should_group_untemplated: true
+  should_round_latency_decimals: true
+  should_respect_env_var: false
+  should_instrument_requests_inprogress: false
+  excluded_handlers: []
+  body_handlers: []
+  round_latency_decimals: 4
+  env_var_name: "ENABLE_METRICS"
+  inprogress_name: "http_requests_inprogress"
+  inprogress_labels: false
+models:
+  - class_path: tests.mocks.IrisModel
+    create_endpoint: true
