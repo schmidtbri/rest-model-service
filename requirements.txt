@@ -4,47 +4,64 @@
 #
 #    pip-compile requirements.in
 #
-annotated-types==0.6.0
+annotated-doc==0.0.4
+    # via fastapi
+annotated-types==0.7.0
     # via pydantic
-anyio==4.2.0
+anyio==4.12.1
     # via starlette
-click==8.1.7
+click==8.1.8
     # via uvicorn
-exceptiongroup==1.2.0
+deprecated==1.3.1
+    # via limits
+exceptiongroup==1.3.1
     # via anyio
-fastapi==0.108.0
-    # via
-    #   -r requirements.in
-    #   prometheus-fastapi-instrumentator
-h11==0.14.0
+fastapi==0.128.8
+    # via -r requirements.in
+h11==0.16.0
     # via uvicorn
-idna==3.6
+idna==3.18
     # via anyio
+limits==4.2
+    # via slowapi
 ml-base==0.2.2
     # via -r requirements.in
-prometheus-client==0.19.0
+packaging==24.2
+    # via limits
+prometheus-client==0.25.0
     # via prometheus-fastapi-instrumentator
-prometheus-fastapi-instrumentator==6.1.0
+prometheus-fastapi-instrumentator==7.1.0
     # via -r requirements.in
-pydantic==2.5.3
+pydantic==2.13.4
     # via
     #   fastapi
     #   ml-base
-pydantic-core==2.14.6
+pydantic-core==2.46.4
     # via pydantic
-pyyaml==6.0.1
+pyyaml==6.0.3
     # via -r requirements.in
-sniffio==1.3.0
-    # via anyio
-starlette==0.32.0.post1
-    # via fastapi
-typing-extensions==4.9.0
+slowapi==0.1.9
+    # via -r requirements.in
+starlette==0.49.3
+    # via
+    #   fastapi
+    #   prometheus-fastapi-instrumentator
+typing-extensions==4.15.0
     # via
     #   anyio
+    #   exceptiongroup
     #   fastapi
+    #   limits
     #   pydantic
     #   pydantic-core
     #   starlette
+    #   typing-inspection
     #   uvicorn
-uvicorn==0.25.0
+typing-inspection==0.4.2
+    # via
+    #   fastapi
+    #   pydantic
+uvicorn==0.39.0
     # via -r requirements.in
+wrapt==2.2.1
+    # via deprecated

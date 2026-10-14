@@ -134,3 +134,4 @@ dmypy.json
 rest_model_service/version.txt
 
 reports
+.github/copilot-instructions.md

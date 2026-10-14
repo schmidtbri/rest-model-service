@@ -3,3 +3,4 @@ ml-base>=0.2.0
 pyyaml
 uvicorn
 prometheus-fastapi-instrumentator
+slowapi

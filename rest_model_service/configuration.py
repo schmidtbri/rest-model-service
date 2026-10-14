@@ -46,6 +46,14 @@ class MetricsConfiguration(BaseModel):
                                                                "`should_instrument_requests_inprogress` is `True`. "
                                                                "Defaults to `False`.")
 
+class RateLimitConfiguration(BaseModel):
+    """Configuration for rate limits."""
+
+    enabled: bool = Field(default=False, description="Enable rate limiting.")
+    max_requests: int = Field(default=100, description="Maximum number of requests per time window.")
+    time_window: int = Field(default=60, description="Time window in seconds.")
+
+
 
 class Model(BaseModel):
     """Settings for a single model in the service."""
@@ -56,6 +64,7 @@ class Model(BaseModel):
                                                                                  "model.")
     configuration: Optional[Dict[str, Any]] = Field(default=None, description="Configuration to initialize model "
                                                                               "instance.")
+    rate_limit: Optional[Dict[str, Any]] = Field(default=None, description="Rate limit configuration.")
 
 
 class ServiceConfiguration(BaseModel):
@@ -67,3 +76,5 @@ class ServiceConfiguration(BaseModel):
     models: List[Model] = Field(default=[], description="Model configuration.")
     logging: Optional[Dict] = Field(default=None, description="Logging configuration.")
     metrics: Optional[MetricsConfiguration] = Field(default=None, description="Metrics configuration.")
+    rate_limit_backend: Optional[str] = Field(default=None, description="Rate limit backend, required if rate limits "
+                                                                        "are enabled for any model.")

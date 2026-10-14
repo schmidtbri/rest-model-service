@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rest_model_service"
+version = "0.1.0"
+description = "RESTful service for hosting machine learning models."
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [
+    { name = "Brian Schmidt", email = "6666331+schmidtbri@users.noreply.github.com" }
+]
+license = { text = "BSD" }
+urls = { Documentation = "https://schmidtbri.github.io/rest-model-service/", SourceCode = "https://github.com/schmidtbri/rest-model-service", Tracker = "https://github.com/schmidtbri/rest-model-service/issues" }
+keywords = ["machine learning", "REST", "service", "model deployment"]
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "ml-base>=0.2.0",
+    "fastapi",
+    "uvicorn",
+    "pyyaml"
+]
+
+[project.optional-dependencies]
+metrics = ["prometheus-fastapi-instrumentator"]
+rate_limit = ["slowapi"]
+tests = [
+    "pytest",
+    "pytest-html",
+    "pylama",
+    "coverage",
+    "coverage-badge",
+    "radon",
+    "bandit",
+    "safety",
+    "flake8-annotations"
+]
+
+[project.scripts]
+generate_openapi = "rest_model_service.generate_openapi:main"
+
+[tool.setuptools.packages.find]
+exclude = ["tests", "*tests", "tests*"]
+
+[tool.setuptools.package-data]
+"rest_model_service" = ["version.txt"]

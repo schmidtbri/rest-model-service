@@ -8,3 +8,4 @@ radon
 bandit
 safety
 flake8-annotations
+pyflakes

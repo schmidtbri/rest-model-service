@@ -1,4 +1,5 @@
 TEST_PATH=./tests
+PYTHON=python
 
 .DEFAULT_GOAL := help
 
@@ -91,3 +92,14 @@ check-codemetrics:  ## Calculate code metrics of the package
 check-annotations: ## Check for type annotations coverage
 	flake8 rest_model_service --max-line-length=120
 .PHONY: check-annotations
+
+check-lint: ## Check code style using pylama
+	$(PYTHON) -m pylama rest_model_service
+.PHONY: check-lint
+
+check-all: check-lint check-codestyle check-docstyle check-annotations check-codemetrics check-security check-dependencies ## Run all code quality checks
+.PHONY: check-all
+
+quality: test check-all ## Run tests and all code quality checks
+.PHONY: quality
+
